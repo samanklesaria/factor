@@ -266,7 +266,7 @@ PRIVATE>
 TUPLE: button* < button value ;
 
 : <button*> ( label -- button )
-    [ [ dup value>> or ] keep set-control-value ] button* new-button ;
+    [ [ [ value>> ] keep or ] keep set-control-value ] button* new-button ;
 
 : <border-button*> ( label -- button ) <button*> border-button-theme ;
 
