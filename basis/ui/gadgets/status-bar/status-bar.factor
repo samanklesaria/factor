@@ -12,7 +12,7 @@ IN: ui.gadgets.status-bar
 
 : open-status-window ( gadget title/attributes -- )
     ?attributes f <model> >>status <world>
-    dup status>> <status-bar> f track-add
+    dup status>> <status-bar> f add-gadget*
     open-world-window ;
 
 : show-summary ( object gadget -- )

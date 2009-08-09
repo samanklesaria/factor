@@ -47,7 +47,7 @@ PRIVATE>
         swap >>error
         add-toolbar
         dup <restart-list> >>restart-list
-        dup <error-display> f track-add
+        dup <error-display> f add-gadget*
         COLOR: white <solid> >>interior ;
 
 M: debugger focusable-child*

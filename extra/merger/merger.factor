@@ -14,7 +14,7 @@ IN: merger
             [ <label> 1array >>children drop ]
             [ swap set-control-value ] 2bi ] [ drop ] if*
          ] <border-button> swap >>model swap <labeled-gadget>
-         1 track-add
+         1 add-gadget*
       ] 2each
     ] keep
     dup first2
@@ -25,7 +25,7 @@ IN: merger
          ] with-directory
       ] keep hide-glass
     ] [ drop ] if ]
-    "merge" swap <border-button> 0.4 track-add { 300 220 } >>pref-dim "Merging" open-window
+    "merge" swap <border-button> 0.4 add-gadget* { 300 220 } >>pref-dim "Merging" open-window
 ] with-ui ;
 
 MAIN: main

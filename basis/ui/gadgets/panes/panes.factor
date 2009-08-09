@@ -31,8 +31,8 @@ M: pane-stream stream-element-type drop +character+ ;
 
 : prepare-last-line ( pane -- )
     [ last-line>> ] keep
-    [ current>> f track-add ]
-    [ input>> [ 1 track-add ] when* ] bi
+    [ current>> f add-gadget* ]
+    [ input>> [ 1 add-gadget* ] when* ] bi
     drop ; inline
 
 : init-current ( pane -- pane )
@@ -62,7 +62,7 @@ M: pane gadget-selection ( pane -- string/f )
     <shelf> +baseline+ >>align >>prototype ; inline
 
 : init-output ( pane -- pane )
-    <incremental> [ >>output ] [ f track-add ] bi ; inline
+    <incremental> [ >>output ] [ f add-gadget* ] bi ; inline
 
 : pane-theme ( pane -- pane )
     1 >>fill
@@ -70,7 +70,7 @@ M: pane gadget-selection ( pane -- string/f )
 
 : init-last-line ( pane -- pane )
     horizontal <track> 0 >>fill +baseline+ >>align
-    [ >>last-line ] [ 1 track-add ] bi
+    [ >>last-line ] [ 1 add-gadget* ] bi
     dup prepare-last-line ; inline
 
 M: pane selected-children

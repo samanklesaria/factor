@@ -261,7 +261,7 @@ PRIVATE>
         bi assoc-each ;
 
 : add-toolbar ( track -- track )
-    dup <toolbar> { 3 3 } <border> align-left f track-add ;
+    dup <toolbar> { 3 3 } <border> align-left f add-gadget* ;
 
 TUPLE: button* < button value ;
 

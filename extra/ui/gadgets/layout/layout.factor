@@ -38,7 +38,7 @@ M: model -> dup , ;
 
 <PRIVATE
 
-: add-layout ( track layout -- track ) [ gadget>> ] [ size>> ] bi track-add ;
+: add-layout ( track layout -- track ) [ gadget>> ] [ size>> ] bi add-gadget* ;
 : layouts ( sized? gadgets -- layouts ) [ [ gadget? ] [ layout? ] bi or ] filter swap
    [ [ dup layout? [ f <layout> ] unless ] map ]
    [ [ dup gadget? [ gadget>> ] unless ] map ] if ;
@@ -85,8 +85,8 @@ GENERIC# add-gadget-at 1 ( item location -- )
 M: object add-gadget-at insertion-point -rot (add-gadget-at) ;
 M: model add-gadget-at parent>> dup book:book? [ "No models in books" throw ]
    [ dup model>> dup collection? [ nip swap add-connection ] [ drop [ 1array <collection> ] dip (>>model) ] if ] if ;
-: track-add-at ( item location size -- ) swap [ <layout> ] dip add-gadget-at ;
-: (track-add-at) ( parent item n size -- ) swap [ <layout> ] dip (add-gadget-at) ;
+: add-gadget*-at ( item location size -- ) swap [ <layout> ] dip add-gadget-at ;
+: (add-gadget*-at) ( parent item n size -- ) swap [ <layout> ] dip (add-gadget-at) ;
 
 <PRIVATE
 : insert-item ( item location -- ) [ dup get [ drop ] [ remove-members ] if ] [ on ] [ ] tri

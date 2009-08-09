@@ -76,8 +76,8 @@ M: hashtable make-slot-descriptions
         add-toolbar
         swap >>model
         dup model>> <inspector-table> >>table
-        dup model>> <summary-gadget> "Object" <labeled-gadget> f track-add
-        dup table>> <scroller> "Contents" <labeled-gadget> 1 track-add ;
+        dup model>> <summary-gadget> "Object" <labeled-gadget> f add-gadget*
+        dup table>> <scroller> "Contents" <labeled-gadget> 1 add-gadget* ;
 
 M: inspector-gadget focusable-child*
     table>> ;

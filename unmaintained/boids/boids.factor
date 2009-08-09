@@ -243,8 +243,8 @@ USING: math.parser
       
     <pile> 1 >>fill
       { 1 0 } <track>
-        NAME-LABEL  0.5 track-add
-        VALUE-LABEL 0.5 track-add
+        NAME-LABEL  0.5 add-gadget*
+        VALUE-LABEL 0.5 add-gadget*
       add-gadget
       
       "+0.1"
@@ -282,8 +282,8 @@ USING: math.parser
       <pile> 1 >>fill
     
         { 1 0 } <track>
-          "Population: " <label> reverse-video-theme 0.5 track-add
-          VALUE-LABEL                                0.5 track-add
+          "Population: " <label> reverse-video-theme 0.5 add-gadget*
+          VALUE-LABEL                                0.5 add-gadget*
         add-gadget
 
         "Add 10"

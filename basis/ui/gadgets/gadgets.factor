@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors arrays hashtables kernel math namespaces
 make sequences quotations math.vectors combinators sorting
-binary-search vectors dlists deques models threads
+binary-search vectors dlists deques models threads classes
 concurrency.flags math.order math.rectangles fry locals ;
 IN: ui.gadgets
 
@@ -97,6 +97,11 @@ M: gadget contains-point? ( loc gadget -- ? )
 : each-child ( gadget quot -- )
     [ children>> ] dip each ; inline
 
+DEFER: invalid-children
+
+: each-invalid-child ( gadget quot -- )
+    [ invalid-children ] dip each ; inline
+
 ! Selection protocol
 GENERIC: gadget-selection? ( gadget -- ? )
 
@@ -171,7 +176,6 @@ PRIVATE>
 SYMBOL: in-layout?
 
 GENERIC: dim-changed ( gadget -- )
-
 M: gadget dim-changed
     in-layout? get [ invalidate ] [ invalidate* ] if ;
 
@@ -204,7 +208,7 @@ M: gadget layout* drop ;
     dup layout-state>> [
         f >>layout-state
         dup layout*
-        dup [ layout ] each-child
+        dup [ layout ] each-invalid-child
     ] when drop ;
 
 GENERIC: graft* ( gadget -- )
@@ -284,10 +288,6 @@ M: gadget ungraft* drop ;
     dup forget-pref-dim
     f >>parent drop ;
 
-: (clear-gadget) ( gadget -- )
-    dup [ (unparent) ] each-child
-    f >>focus f >>children drop ;
-
 : unfocus-gadget ( child gadget -- )
     [ nip ] [ focus>> eq? ] 2bi [ f >>focus ] when drop ;
 
@@ -296,51 +296,6 @@ PRIVATE>
 : not-in-layout ( -- )
     in-layout? get
     [ "Cannot add/remove gadgets in layout*" throw ] when ;
-
-GENERIC: remove-gadget ( gadget parent -- )
-
-M: gadget remove-gadget 2drop ;
-
-: unparent ( gadget -- )
-    not-in-layout
-    [
-        dup parent>> dup
-        [
-            [ remove-gadget ] [
-                over (unparent)
-                [ unfocus-gadget ]
-                [ children>> delete ]
-                [ nip relayout ]
-                2tri
-            ] 2bi
-        ] [ 2drop ] if
-    ] when* ;
-
-: clear-gadget ( gadget -- )
-    not-in-layout
-    [ (clear-gadget) ] [ relayout ] bi ;
-
-<PRIVATE
-
-: (add-gadget) ( child parent -- )
-    {
-        [ drop unparent ]
-        [ >>parent drop ]
-        [ [ ?push ] change-children drop ]
-        [ graft-state>> second [ graft ] [ drop ] if ]
-    } 2cleave ;
-
-PRIVATE>
-
-: add-gadget ( parent child -- parent )
-    not-in-layout
-    over (add-gadget)
-    dup relayout ;
-
-: add-gadgets ( parent children -- parent )
-    not-in-layout
-    [ over (add-gadget) ] each
-    dup relayout ;
 
 : parents ( gadget -- seq )
     [ parent>> ] follow ;
@@ -395,6 +350,105 @@ M: f request-focus-on 2drop ;
 
 : focus-path ( gadget -- seq )
     [ focus>> ] follow ;
+
+! Layout Protocol
+
+MIXIN: layout-gadget
+
+SYMBOL: default ! no given extra info
+
+! For layout optimization
+GENERIC: invalid-children ( parent -- children )
+M: gadget invalid-children children>> ;
+
+GENERIC: remove-info ( gadget parent -- )
+M: gadget remove-info 2drop ;
+
+GENERIC: clear-info ( parent -- )
+M: gadget clear-info drop ;
+
+GENERIC: (layout-info) ( gadget parent -- info )
+M: gadget (layout-info) 2drop default ;
+
+GENERIC: add-info ( info parent -- )
+M: gadget add-info 2drop ;
+
+GENERIC# add-info-at 1 ( info parent index -- )
+M: gadget add-info-at 3drop ;
+
+: layout-info ( gadget -- info ) dup parent>> (layout-info) ;
+
+: unparent ( gadget -- )
+    not-in-layout
+    [
+        dup parent>> dup
+        [
+            [ remove-info ] [
+                over (unparent)
+                [ unfocus-gadget ]
+                [ children>> delete ]
+                [ nip relayout ]
+                2tri
+            ] 2bi
+        ] [ 2drop ] if
+    ] when* ;
+
+<PRIVATE
+
+: move-from ( child old-parent -- old-info )
+    over parent>>
+    [
+        [ class ] bi@ =
+        [ dup layout-info ] [ f ] if
+    ] [ drop f ] if*
+    [ unparent ] dip ;
+
+:: with-layout ( parent child info quot -- parent )
+    not-in-layout
+    [let | info' [ info dup default = [ child parent move-from swap or ] when ] |
+        info' child parent
+            [ >>parent drop ]
+            [ quot call( info child parent -- ) ]
+            [ graft-state>> second [ graft ] [ drop ] if ] 2tri
+        parent dup relayout
+    ] ;
+
+: (clear-gadget) ( gadget -- )
+    dup [ (unparent) ] each-child
+    f >>focus f >>children drop ;
+
+PRIVATE>
+
+: clear-gadget ( gadget -- )
+    dup clear-info
+    not-in-layout
+    [ (clear-gadget) ] [ relayout ] bi ;
+
+: add-gadget* ( parent child info -- parent )
+    [ [ ?push ] change-children add-info ] with-layout ;
+
+: add-gadget ( parent child -- parent ) f add-gadget* ;
+
+: add-gadgets ( parent children -- parent ) [ add-gadget ] each ;
+
+: add-gadget-at* ( parent child index info -- parent ) swap
+    [| info child parent index |
+        child index parent [ insert-nth ] change-children
+        info swap index add-info-at
+    ] curry with-layout ;
+
+: add-gadget-at ( parent gadget index -- parent ) f add-gadget-at* ;
+
+! Until we're done:
+<PRIVATE
+: (add-gadget) ( child parent -- )
+    {
+        [ drop unparent ]
+        [ >>parent drop ]
+        [ [ ?push ] change-children drop ]
+        [ graft-state>> second [ graft ] [ drop ] if ]
+    } 2cleave ;
+PRIVATE>
 
 USING: vocabs vocabs.loader ;
 

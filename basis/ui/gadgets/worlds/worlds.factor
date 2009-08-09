@@ -120,7 +120,7 @@ M: world request-focus-on ( child gadget -- )
         [ pixel-format-attributes>> >>pixel-format-attributes ]
         [ window-controls>> >>window-controls ]
         [ grab-input?>> >>grab-input? ]
-        [ gadgets>> [ 1 track-add ] each ]
+        [ gadgets>> [ 1 add-gadget* ] each ]
     } cleave ;
 
 : <world> ( world-attributes -- world )
@@ -138,7 +138,7 @@ M: world focusable-child* children>> [ t ] [ first ] if-empty ;
 
 M: world children-on nip children>> ;
 
-M: world remove-gadget
+M: world remove-info
     2dup layers>> memq?
     [ layers>> delq ] [ call-next-method ] if ;
 

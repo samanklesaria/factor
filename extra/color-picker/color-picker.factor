@@ -35,13 +35,13 @@ M: color-preview model-changed
     vertical <track>
         { 5 5 } >>gap
         <color-sliders>
-        [ f track-add ]
+        [ f add-gadget* ]
         [
-            [ <color-model> <color-preview> 1 track-add ]
+            [ <color-model> <color-preview> 1 add-gadget* ]
             [
                 [ [ truncate number>string ] map " " join ]
                 <arrow> <label-control>
-                f track-add
+                f add-gadget*
             ] bi
         ] bi* ;
 

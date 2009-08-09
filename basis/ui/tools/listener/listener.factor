@@ -204,14 +204,14 @@ TUPLE: listener-gadget < tool error-summary output scroller input ;
 
 : init-error-summary ( listener -- listener )
     <error-summary> >>error-summary
-    dup error-summary>> f track-add ;
+    dup error-summary>> f add-gadget* ;
 
 : <listener-gadget> ( -- listener )
     vertical listener-gadget new-track
         add-toolbar
         init-input/output
         dup output>> <scroller> >>scroller
-        dup scroller>> 1 track-add
+        dup scroller>> 1 add-gadget*
         init-error-summary ;
 
 M: listener-gadget focusable-child*

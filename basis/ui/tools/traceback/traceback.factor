@@ -57,12 +57,12 @@ TUPLE: traceback-gadget < track ;
         [ vertical <track> { 3 3 } >>gap ] dip
         [
             [ horizontal <track> { 3 3 } >>gap ] dip
-            [ <datastack-display> 1/2 track-add ]
-            [ <retainstack-display> 1/2 track-add ] bi
-            1/3 track-add
+            [ <datastack-display> 1/2 add-gadget* ]
+            [ <retainstack-display> 1/2 add-gadget* ] bi
+            1/3 add-gadget*
         ]
-        [ <callstack-display> 2/3 track-add ] bi
-        { 3 3 } <filled-border> 1 track-add
+        [ <callstack-display> 2/3 add-gadget* ] bi
+        { 3 3 } <filled-border> 1 add-gadget*
     ] bi
     add-toolbar ;
 

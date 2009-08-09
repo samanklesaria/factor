@@ -13,13 +13,13 @@ TUPLE: popped-editor < multiline-editor ;
 
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
 : new-popped ( popped -- ) insertion-point "" <popped>
-    [ rot 1 + f (track-add-at) ] keep [ relayout ] [ request-focus ] bi ;
+    [ rot 1 + f (add-gadget*-at) ] keep [ relayout ] [ request-focus ] bi ;
 : focus-prev ( popped -- ) dup parent>> children>> length 1 =
     [ drop ] [
         insertion-point [ 1 - dup -1 = [ drop 1 ] when ] [ children>> ] bi* nth
         [ request-focus ] [ editor>> end-of-document ] bi
     ] if ;
-: initial-popped ( popper -- ) "" <popped> [ f track-add drop ] keep request-focus ;
+: initial-popped ( popper -- ) "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
 TUPLE: popper < track { unfocus-hook initial: [ drop ] } ;
 ! list of strings is model (make shown objects implement sequence protocol)
@@ -43,7 +43,7 @@ M: popper handle-gesture swap T{ button-down f f 1 } =
 
 M: popper model-changed
     [ children>> [ unparent ] each ]
-    [ [ value>> [ <popped> ] map ] dip [ f track-add ] reduce request-focus ] bi ;
+    [ [ value>> [ <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi ;
 
 M: popped pref-dim* editor>>
     [ pref-dim* first ] [ line-height ] bi 2array ;

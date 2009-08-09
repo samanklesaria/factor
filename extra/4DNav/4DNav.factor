@@ -487,32 +487,32 @@ M: space adsoda-display-model
 
 : controller-window* ( -- gadget )
     { 0 1 } <track>
-        menu-bar f track-add
+        menu-bar f add-gadget*
         <list-runner>  
             <scroller>
-        f track-add
+        f add-gadget*
         <shelf>
             "Projection mode : " <label> add-gadget
             model-projection-chooser add-gadget
-        f track-add
+        f add-gadget*
         <shelf>
             "Collision detection (slow and buggy ) : " 
                 <label> add-gadget
             collision-detection-chooser add-gadget
-        f track-add
+        f add-gadget*
         <pile>
             0.5 >>align    
             menu-4D add-gadget 
             COLOR: purple s:<solid> >>interior
             "4D movements" <labeled-gadget>
-        f track-add
+        f add-gadget*
         <pile>
             0.5 >>align
             { 2 2 } >>gap
             menu-3D add-gadget
             COLOR: purple s:<solid> >>interior
             "Camera 3D" <labeled-gadget>
-        f track-add      
+        f add-gadget*      
         COLOR: gray s:<solid> >>interior
  ;
  

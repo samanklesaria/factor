@@ -128,7 +128,7 @@ TUPLE: error-display < track ;
     vertical error-display new-track
         add-toolbar
         swap error>> >>model
-        dup model>> [ [ print-error ] when* ] <pane-control> <scroller> 1 track-add ;
+        dup model>> [ [ print-error ] when* ] <pane-control> <scroller> 1 add-gadget* ;
 
 : com-inspect ( error-display -- )
     model>> value>> [ inspector ] when* ;
@@ -163,11 +163,11 @@ error-display "toolbar" f {
     :> error-list
     error-list vertical <track>
         { 5 5 } >>gap
-        error-list <error-list-toolbar> f track-add
-        error-list source-file-table>> <scroller> "Source files" <labeled-gadget> 1/4 track-add
-        error-list error-table>> <scroller> "Errors" <labeled-gadget> 1/2 track-add
-        error-list error-display>> "Details" <labeled-gadget> 1/4 track-add
-    { 5 5 } <filled-border> 1 track-add ;
+        error-list <error-list-toolbar> f add-gadget*
+        error-list source-file-table>> <scroller> "Source files" <labeled-gadget> 1/4 add-gadget*
+        error-list error-table>> <scroller> "Errors" <labeled-gadget> 1/2 add-gadget*
+        error-list error-display>> "Details" <labeled-gadget> 1/4 add-gadget*
+    { 5 5 } <filled-border> 1 add-gadget* ;
 
 M: error-list-gadget focusable-child*
     source-file-table>> ;

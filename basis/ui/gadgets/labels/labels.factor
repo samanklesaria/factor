@@ -108,10 +108,10 @@ PRIVATE>
 
 : label-on-left ( gadget label -- button )
     label-on-left/right
-        swap >label f track-add
-        swap 1 track-add ;
+        swap >label f add-gadget*
+        swap 1 add-gadget* ;
 
 : label-on-right ( label gadget -- button )
     label-on-left/right
-        swap f track-add
-        swap >label 1 track-add ;
+        swap f add-gadget*
+        swap >label 1 add-gadget* ;

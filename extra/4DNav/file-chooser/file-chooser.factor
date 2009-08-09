@@ -126,14 +126,14 @@ file-chooser H{
     swap >>hook
     init-filelist-model
     dup <file-list> >>list
-    "choose a file in directory " <label> f track-add
-    dup path>> <label-control> f track-add
+    "choose a file in directory " <label> f add-gadget*
+    dup path>> <label-control> f add-gadget*
     dup extension>> ", " join "limited to : " prepend 
-        <label> f track-add
+        <label> f add-gadget*
     <shelf> 
         "selected file : " <label> add-gadget
         over selected-file>> <label-control> add-gadget
-    f track-add
+    f add-gadget*
     <shelf> 
         over [  swap fc-go-parent ] curry  "go up" 
             swap <border-button> add-gadget
@@ -142,8 +142,8 @@ file-chooser H{
     !    over [ swap fc-ok-action ] curry "OK" 
     !    swap <bevel-button> add-gadget
     !    [ drop ]  "Cancel" swap <bevel-button> add-gadget
-    f track-add
-    dup list>> <scroller> 1 track-add
+    f add-gadget*
+    dup list>> <scroller> 1 add-gadget*
 ;
 
 M: file-chooser pref-dim* drop { 400 200 } ;

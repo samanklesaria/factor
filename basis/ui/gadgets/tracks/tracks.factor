@@ -57,10 +57,14 @@ M: track pref-dim* ( gadget -- dim )
 
 PRIVATE>
 
-: track-add ( track gadget constraint -- track )
-    pick sizes>> push add-gadget ;
+M: track (layout-info)
+    [ children>> index ] [ sizes>> ] bi nth ;
 
-M: track remove-gadget
+M: track add-info over default = [ [ drop f ] dip ] when sizes>> push ;
+
+M: track add-info-at swap [ insert-nth ] change-sizes drop ;
+
+M: track remove-info
     [ [ children>> index ] keep sizes>> delete-nth ] [ call-next-method ] 2bi ;
 
 : clear-track ( track -- ) [ sizes>> delete-all ] [ clear-gadget ] bi ;

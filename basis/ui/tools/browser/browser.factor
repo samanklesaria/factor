@@ -49,8 +49,8 @@ M: browser-gadget set-history-value
         0 >>fill
         1/2 >>align
         { 5 5 } >>gap
-        over <toolbar> f track-add
-        swap search-field>> "Search:" label-on-left 1 track-add ;
+        over <toolbar> f add-gadget*
+        swap search-field>> "Search:" label-on-left 1 add-gadget* ;
 
 : <browser-gadget> ( link -- gadget )
     vertical browser-gadget new-track
@@ -58,10 +58,10 @@ M: browser-gadget set-history-value
         swap >link <model> >>model
         dup <history> >>history
         dup <search-field> >>search-field
-        dup <browser-toolbar> { 3 3 } <border> { 1 0 } >>fill f track-add
+        dup <browser-toolbar> { 3 3 } <border> { 1 0 } >>fill f add-gadget*
         dup <help-pane> >>pane
         dup pane>> <scroller> >>scroller
-        dup scroller>> 1 track-add ;
+        dup scroller>> 1 add-gadget* ;
 
 M: browser-gadget graft*
     [ add-definition-observer ] [ call-next-method ] bi ;

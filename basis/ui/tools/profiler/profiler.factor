@@ -151,12 +151,12 @@ M: method-renderer column-titles drop { "" "Method" "Count" } ;
             10 >>min-rows
             10 >>max-rows
         "Vocabularies" <labeled-gadget>
-    1/2 track-add
+    1/2 add-gadget*
         profiler <words-model> word-renderer <profiler-table>
             10 >>min-rows
             10 >>max-rows
         "Words" <labeled-gadget>
-    1/2 track-add ;
+    1/2 add-gadget* ;
 
 :: <methods-tab> ( profiler -- gadget )
     vertical <track>
@@ -166,18 +166,18 @@ M: method-renderer column-titles drop { "" "Method" "Count" } ;
             profiler <generic-model> word-renderer <profiler-table>
                 profiler generic>> >>selection
             "Generic words" <labeled-gadget>
-        1/2 track-add
+        1/2 add-gadget*
             profiler <class-model> word-renderer <profiler-table>
                 profiler class>> >>selection
             "Classes" <labeled-gadget>
-        1/2 track-add
-    1/2 track-add
+        1/2 add-gadget*
+    1/2 add-gadget*
         profiler methods>> method-renderer <profiler-table>
             5 >>min-rows
             5 >>max-rows
             40 >>min-cols
         "Methods" <labeled-gadget>
-    1/2 track-add ;
+    1/2 add-gadget* ;
 
 : <selection-model> ( -- model ) { f 0 } <model> ;
 
@@ -191,11 +191,11 @@ M: method-renderer column-titles drop { "" "Method" "Count" } ;
         <selection-model> >>generic
         <selection-model> >>class
         dup <methods-model> >>methods
-        dup <profiler-tool-bar> { 3 3 } <filled-border> f track-add
+        dup <profiler-tool-bar> { 3 3 } <filled-border> f add-gadget*
         <tabbed-gadget>
             over <words-tab> "Words" add-tab
             over <methods-tab> "Methods" add-tab
-        1 track-add ;
+        1 add-gadget* ;
 
 : profiler-help ( -- ) "ui-profiler" com-browse ;
 

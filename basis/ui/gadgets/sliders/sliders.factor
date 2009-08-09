@@ -104,7 +104,7 @@ CONSTANT: vertical-thumb-tiles
         { horizontal [ horizontal-thumb-tiles ] }
         { vertical [ vertical-thumb-tiles ] }
     } case
-    [ [ theme-image <icon> ] dip track-add ] assoc-each ;
+    [ [ theme-image <icon> ] dip add-gadget* ] assoc-each ;
 
 : <thumb> ( orientation -- thumb )
     thumb new-track
@@ -239,10 +239,10 @@ PRIVATE>
             [ <slider-pen> >>interior ]
             [ <thumb> >>thumb ]
             [ <elevator> >>elevator ]
-            [ drop dup add-thumb-to-elevator 1 track-add ]
-            [ <up-button> f track-add ]
-            [ <down-button> f track-add ]
-            [ drop <gadget> { 1 1 } >>dim f track-add ]
+            [ drop dup add-thumb-to-elevator 1 add-gadget* ]
+            [ <up-button> f add-gadget* ]
+            [ <down-button> f add-gadget* ]
+            [ drop <gadget> { 1 1 } >>dim f add-gadget* ]
         } cleave ;
 
 : <slider> ( range orientation -- slider ) slider new-slider ;

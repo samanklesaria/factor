@@ -50,11 +50,11 @@ PRIVATE>
         0 <model> >>model
         <shelf> >>tabs
         horizontal <track>
-            over tabs>> f track-add
-            <lip> 1 track-add
-        f track-add
+            over tabs>> f add-gadget*
+            <lip> 1 add-gadget*
+        f add-gadget*
         dup model>> <empty-book> >>book
-        dup book>> { 3 3 } <filled-border> 1 track-add ;
+        dup book>> { 3 3 } <filled-border> 1 add-gadget* ;
 
 : add-tab ( tabbed child label -- tabbed )
     [ add-tab/book ] [ add-tab/button ] bi* ;

@@ -32,8 +32,8 @@ TUPLE: search-field < track field ;
         { 5 5 } >>gap
         +baseline+ >>align
         swap <model-field> 10 >>min-cols >>field
-        dup field>> "Search:" label-on-left 1 track-add
-        dup <clear-button> f track-add ;
+        dup field>> "Search:" label-on-left 1 add-gadget*
+        dup <clear-button> f add-gadget* ;
 
 M: search-field focusable-child* field>> ;
 
@@ -71,10 +71,10 @@ CONSULT: table-protocol search-table table>> ;
     vertical search-table new-track
         values >>model
         search <search-field> >>field
-        dup field>> { 2 2 } <filled-border> f track-add
+        dup field>> { 2 2 } <filled-border> f add-gadget*
         values search 500 milliseconds <delay> quot <string-search>
         renderer <table> f >>takes-focus? >>table
-        dup table>> <scroller> 1 track-add ; inline
+        dup table>> <scroller> 1 add-gadget* ; inline
 
 M: search-table model-changed
     nip field>> clear-search-field ;
