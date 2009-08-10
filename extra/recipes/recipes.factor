@@ -1,9 +1,9 @@
 USING: accessors arrays colors.constants combinators db.sqlite
 db.tuples db.types io.files.temp kernel locals math
-models.combinators monads persistency sequences
-sequences.extras ui ui.gadgets.buttons ui.gadgets.editors
+models.combinators monads persistency sequences ui.gadgets.buttons
+sequences.extras ui ui.gadgets.model-buttons ui.gadgets.editors
 ui.gadgets.labels ui.gadgets.layout ui.gadgets.scrollers
-ui.gadgets.tables ui.pens.solid ;
+ui.gadgets.tables ui.pens.solid ui.gadgets.model-tables ;
 FROM: sets => prune ;
 IN: recipes
 
@@ -24,30 +24,29 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
      [
         [ "Title:" <label> , $ TITLE $ "Genre:" <label> , $ GENRE $ ] <hbox> ,
         $ BODY $
-        $ BUTTON* $
+        $ BUTTON $
      ] <vbox> ,
   ] <book*> { 350 245 } >>pref-dim ;
   
 :: recipe-browser ( -- ) [ [
     interface
-      <quot-table*> :> tbl
-      "okay" <border-button*> BUTTON* -> :> ok
-      IMG-BUTTON*: submit [ store-tuple ] >>value TOOLBAR -> :> submit
-      IMG-BUTTON*: love 1 >>value TOOLBAR ->
-      IMG-BUTTON*: hate -1 >>value -> 2array merge :> votes
-      IMG-BUTTON*: back -> [ -30 ] <$
-      IMG-BUTTON*: more -> [ 30 ] <$ 2array merge :> viewed
+      <quot-renderer> [ [ title>> ] [ genre>> ] bi 2array ] >>quot
+        { "Title" "Genre" } >>column-titles <model-table*> :> tbl
+      "okay" <model-border-button> BUTTON -> :> ok
+      IMG-MODEL-BUTTON: submit [ store-tuple ] >>value TOOLBAR -> :> submit
+      IMG-MODEL-BUTTON: love 1 >>value TOOLBAR ->
+      IMG-MODEL-BUTTON: hate -1 >>value -> 2array merge :> votes
+      IMG-MODEL-BUTTON: back -> [ -30 ] <$
+      IMG-MODEL-BUTTON: more -> [ 30 ] <$ 2array merge :> viewed
       <spacer> <model-field*> ->% 1 :> search
       submit ok [ [ drop ] ] <$ 2array merge [ drop ] >>value :> quot
-      viewed 0 [ + ] fold search ok t <basic> "all" <button*> ALL ->
+      viewed 0 [ + ] fold search ok t <basic> "all" <model-button> ALL ->
       tbl selection>> votes [ [ + ] curry change-votes modify-tuple ] 2$>
         4array merge
         [ drop [ f ] [ "%" dup surround <pattern> ] if-empty top-recipes ] 3fmap :> ups
-      ups [ top-genres [ <button*> GENRES -> ] map merge ] bind*
+      ups [ top-genres [ <model-button> GENRES -> ] map merge ] bind*
         [ button-text T{ recipe } swap >>genre get-tuples ] fmap
-      tbl swap ups 2merge >>model
-        [ [ title>> ] [ genre>> ] bi 2array ] >>quot
-        { "Title" "Genre" } >>column-titles dup <scroller> RECIPES ,% 1 actions>>
+      tbl swap ups 2merge >>model dup <scroller> RECIPES ,% 1 actions>>
       submit [ "" dup dup <recipe> ] <$ 2array merge
         { [ [ title>> ] fmap <model-field> TITLE ->% .5 ]
           [ [ genre>> ] fmap <model-field> GENRE ->% .5 ]

@@ -3,7 +3,7 @@ models.combinators sequences ui.gadgets ui.gadgets.glass
 ui.gadgets.labels ui.gadgets.tables ui.gestures ;
 IN: ui.gadgets.comboboxes
 
-TUPLE: combo-table < quot-table spawner ;
+TUPLE: combo-table < table spawner ;
 
 M: combo-table handle-gesture [ call-next-method drop ] 2keep swap
    T{ button-up } = [
@@ -18,4 +18,4 @@ combobox H{
 } set-gestures
 
 : <combobox> ( options -- combobox ) [ first [ combobox new-label ] keep <basic> >>model ] keep
-    <basic> combo-table new-quot-table [ 1array ] >>quot >>table ;
+    <basic> list-renderer combo-table new-table >>table ;
