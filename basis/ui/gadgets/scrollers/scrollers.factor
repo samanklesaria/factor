@@ -108,19 +108,19 @@ M: scroller model-changed
     f >>follows 2drop ;
 
 : build-scroller ( scroller -- scroller )
-    dup x>> { 0 1 } grid-add
-    dup y>> { 1 0 } grid-add
-    dup viewport>> { 0 0 } grid-add ; inline
+    dup x>> { 0 1 } add-gadget*
+    dup y>> { 1 0 } add-gadget*
+    dup viewport>> { 0 0 } add-gadget* ; inline
 
 : <column-header-viewport> ( scroller -- viewport )
     [ column-header>> ] [ model>> ] bi
     <viewport> horizontal >>constraint ;
 
 : build-header-scroller ( scroller -- scroller )
-    dup <column-header-viewport> { 0 0 } grid-add
-    dup x>> { 0 2 } grid-add
-    dup y>> { 1 1 } grid-add
-    dup viewport>> { 0 1 } grid-add ; inline
+    dup <column-header-viewport> { 0 0 } add-gadget*
+    dup x>> { 0 2 } add-gadget*
+    dup y>> { 1 1 } add-gadget*
+    dup viewport>> { 0 1 } add-gadget* ; inline
 
 : init-scroller ( column-header scroller -- scroller )
     { 1 1 } >>gap

@@ -23,8 +23,8 @@ SYMBOLS: it startLength ;
      ] change-model ] with-return ] "Yes" op ]
    } cleave
 2array { 1 0 } <track> swap [ 0.5 add-gadget* ] each
-3array <book*> 3 3 <frame> { 1 1 } >>filled-cell { 450 175 } >>pref-dim swap { 1 1 } grid-add
-it get [ length startLength get swap - number>string "/" startLength get number>string 3append ] <arrow> <label-control> { 1 2 } grid-add ;
+3array <book*> 3 3 <frame> { 1 1 } >>filled-cell { 450 175 } >>pref-dim swap { 1 1 } add-gadget*
+it get [ length startLength get swap - number>string "/" startLength get number>string 3append ] <arrow> <label-control> { 1 2 } add-gadget* ;
 
 : drill ( -- ) [
    open-panel [

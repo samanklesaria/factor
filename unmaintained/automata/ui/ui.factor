@@ -72,13 +72,13 @@ DEFER: automata-window
       "5 - Random Rule" [ random-rule     ] view-button add-gadget
       "n - New"         [ automata-window ] view-button add-gadget
 
-    @top grid-add
+    @top add-gadget*
 
     C[ display ] <slate>
       { 400 400 } >>pdim
     dup >slate
 
-    @center grid-add
+    @center add-gadget*
 
   <handler>
 

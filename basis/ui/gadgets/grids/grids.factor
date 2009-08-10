@@ -26,10 +26,18 @@ PRIVATE>
 
 : grid-child ( grid pair -- gadget ) grid@ nth ;
 
-: grid-add ( grid child pair -- grid )
-    [ nip grid-child unparent ] [ drop add-gadget ] [ swapd grid@ set-nth ] 3tri ;
+M: grid add-info over default =
+    [ 2drop ]
+    [
+        [ swap grid-child unparent ]
+        [ [ children>> last ] keep rot grid@ set-nth ] 2bi
+    ] if ;
 
-: grid-remove ( grid pair -- grid ) [ <gadget> ] dip grid-add ;
+M: grid clear-info grid>> delete-all ;
+
+M: grid add-info-at drop add-info ;
+
+: grid-remove ( grid pair -- grid ) [ <gadget> ] dip add-gadget* ;
 
 <PRIVATE
 

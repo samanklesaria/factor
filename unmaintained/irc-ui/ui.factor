@@ -180,8 +180,8 @@ irc-editor "general" f {
     new-frame
     swap >>window
     swap >>chat
-    <irc-pane> [ <scroller> @center grid-add ] keep
-    <irc-editor> <scroller> @bottom grid-add ;
+    <irc-pane> [ <scroller> @center add-gadget* ] keep
+    <irc-editor> <scroller> @bottom add-gadget* ;
 
 M: irc-tab graft*
     [ chat>> ] [ window>> client>> ] bi attach-chat ;
@@ -193,7 +193,7 @@ TUPLE: irc-channel-tab < irc-tab userlist ;
 
 : <irc-channel-tab> ( chat ui-window -- irc-tab )
     irc-channel-tab new-irc-tab
-    <pile> [ <scroller> @right grid-add ] keep >>userlist ;
+    <pile> [ <scroller> @right add-gadget* ] keep >>userlist ;
 
 : update-participants ( tab -- )
     [ userlist>> [ clear-gadget ] keep ]

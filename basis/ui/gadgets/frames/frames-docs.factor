@@ -15,7 +15,7 @@ $nl
 HELP: frame
 { $class-description "A frame is a gadget which lays out its children in a grid, and assigns all remaining space to a distinguished filled cell. The " { $slot "filled-cell" } " slot stores a pair with shape " { $snippet "{ col row }" } "."
 $nl
-"Frames are constructed by calling " { $link <frame> } " and since they inherit from " { $link grid } ", children can be managed with " { $link grid-add } " and " { $link grid-remove } "." } ;
+"Frames are constructed by calling " { $link <frame> } " and since they inherit from " { $link grid } ", children can be managed with " { $link add-gadget* } " and " { $link grid-remove } "." } ;
 
 HELP: <frame>
 { $values { "cols" integer } { "rows" integer } { "frame" frame } }

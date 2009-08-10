@@ -97,11 +97,6 @@ M: gadget contains-point? ( loc gadget -- ? )
 : each-child ( gadget quot -- )
     [ children>> ] dip each ; inline
 
-DEFER: invalid-children
-
-: each-invalid-child ( gadget quot -- )
-    [ invalid-children ] dip each ; inline
-
 ! Selection protocol
 GENERIC: gadget-selection? ( gadget -- ? )
 
@@ -208,7 +203,7 @@ M: gadget layout* drop ;
     dup layout-state>> [
         f >>layout-state
         dup layout*
-        dup [ layout ] each-invalid-child
+        dup [ layout ] each-child
     ] when drop ;
 
 GENERIC: graft* ( gadget -- )
@@ -353,13 +348,7 @@ M: f request-focus-on 2drop ;
 
 ! Layout Protocol
 
-MIXIN: layout-gadget
-
 SYMBOL: default ! no given extra info
-
-! For layout optimization
-GENERIC: invalid-children ( parent -- children )
-M: gadget invalid-children children>> ;
 
 GENERIC: remove-info ( gadget parent -- )
 M: gadget remove-info 2drop ;
@@ -403,15 +392,17 @@ M: gadget add-info-at 3drop ;
     ] [ drop f ] if*
     [ unparent ] dip ;
 
-:: with-layout ( parent child info quot -- parent )
-    not-in-layout
+:: (with-layout) ( parent child info quot -- parent )
     [let | info' [ info dup default = [ child parent move-from swap or ] when ] |
         info' child parent
             [ >>parent drop ]
             [ quot call( info child parent -- ) ]
             [ graft-state>> second [ graft ] [ drop ] if ] 2tri
-        parent dup relayout
+        parent
     ] ;
+
+: with-layout ( parent child info quot -- parent )
+    not-in-layout (with-layout) dup relayout ;
 
 : (clear-gadget) ( gadget -- )
     dup [ (unparent) ] each-child
@@ -427,7 +418,7 @@ PRIVATE>
 : add-gadget* ( parent child info -- parent )
     [ [ ?push ] change-children add-info ] with-layout ;
 
-: add-gadget ( parent child -- parent ) f add-gadget* ;
+: add-gadget ( parent child -- parent ) default add-gadget* ;
 
 : add-gadgets ( parent children -- parent ) [ add-gadget ] each ;
 
@@ -439,15 +430,10 @@ PRIVATE>
 
 : add-gadget-at ( parent gadget index -- parent ) f add-gadget-at* ;
 
-! Until we're done:
+! Stupid incremental!
 <PRIVATE
-: (add-gadget) ( child parent -- )
-    {
-        [ drop unparent ]
-        [ >>parent drop ]
-        [ [ ?push ] change-children drop ]
-        [ graft-state>> second [ graft ] [ drop ] if ]
-    } 2cleave ;
+: (add-gadget) ( child parent -- ) swap f
+    [ [ ?push ] change-children 2drop ] (with-layout) drop ;
 PRIVATE>
 
 USING: vocabs vocabs.loader ;

@@ -348,9 +348,9 @@ USING: math.parser
 
         [ add-gadget ] tri@
 
-      @top grid-add
+      @top add-gadget*
 
-      BOIDS-GADGET @center grid-add
+      BOIDS-GADGET @center add-gadget*
 
     "Boids" open-window
 

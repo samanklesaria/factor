@@ -193,37 +193,37 @@ VAR: present-space
                 button* add-gadget
           "XY -" [ drop rotation-step neg 4D-Rxy rotation-4D ] 
                 button* add-gadget 
-       @top-left grid-add    
+       @top-left add-gadget*    
         <pile> 1 >>fill
           "XZ +" [ drop rotation-step 4D-Rxz rotation-4D ] 
                 button* add-gadget
           "XZ -" [ drop rotation-step neg 4D-Rxz rotation-4D ] 
                 button* add-gadget 
-       @top grid-add    
+       @top add-gadget*    
         <pile> 1 >>fill
           "YZ +" [ drop rotation-step 4D-Ryz rotation-4D ] 
                 button* add-gadget
           "YZ -" [ drop rotation-step neg 4D-Ryz rotation-4D ] 
                 button* add-gadget 
-        @center grid-add
+        @center add-gadget*
          <pile> 1 >>fill
           "XW +" [ drop rotation-step 4D-Rxw rotation-4D ] 
                 button* add-gadget
           "XW -" [ drop rotation-step neg 4D-Rxw rotation-4D ] 
                 button* add-gadget 
-        @top-right grid-add   
+        @top-right add-gadget*   
          <pile> 1 >>fill
           "YW +" [ drop rotation-step 4D-Ryw rotation-4D ] 
                 button* add-gadget
           "YW -" [ drop rotation-step neg 4D-Ryw rotation-4D ] 
                 button* add-gadget 
-       @right grid-add    
+       @right add-gadget*    
          <pile> 1 >>fill
           "ZW +" [ drop rotation-step 4D-Rzw rotation-4D ] 
                 button* add-gadget
           "ZW -" [ drop rotation-step neg 4D-Rzw rotation-4D ] 
                 button* add-gadget 
-       @bottom-right grid-add    
+       @bottom-right add-gadget*    
 ;
 
 : menu-translations-4D ( -- gadget )
@@ -239,7 +239,7 @@ VAR: present-space
                     button* add-gadget 
             add-gadget
             "YZW" <label> add-gadget
-         @bottom-right grid-add
+         @bottom-right add-gadget*
          <pile> 1 >>fill
             "XZW" <label> add-gadget
             <shelf> 1 >>fill
@@ -250,7 +250,7 @@ VAR: present-space
                     translation-4D ] 
                     button* add-gadget 
                 add-gadget
-         @top-right grid-add
+         @top-right add-gadget*
          <pile> 1 >>fill
             "XYW" <label> add-gadget
             <shelf> 1 >>fill
@@ -261,7 +261,7 @@ VAR: present-space
                     translation-4D ] 
                     button* add-gadget 
                 add-gadget                 
-        @top-left grid-add     
+        @top-left add-gadget*     
         <pile> 1 >>fill
             <shelf> 1 >>fill
                 "W+" [ drop { 0 0 0 1  } translation-step v*n 
@@ -272,8 +272,8 @@ VAR: present-space
                     button* add-gadget 
                 add-gadget
             "XYZ" <label> add-gadget
-        @bottom-left grid-add 
-        "X" <label> @center grid-add
+        @bottom-left add-gadget* 
+        "X" <label> @center add-gadget*
 ;
 
 : menu-4D ( -- gadget )  
@@ -336,39 +336,39 @@ VAR: present-space
     3 3 <frame>
         { 1 1 } >>filled-cell
         "Turn\n left"  [ rotation-step  turn-left  ] 
-            camera-button   @left grid-add     
+            camera-button   @left add-gadget*     
         "Turn\n right" [ rotation-step turn-right ] 
-            camera-button   @right grid-add     
+            camera-button   @right add-gadget*     
         "Pitch down"   [ rotation-step  pitch-down ] 
-            camera-button   @bottom grid-add     
+            camera-button   @bottom add-gadget*     
         "Pitch up"     [ rotation-step  pitch-up   ] 
-            camera-button   @top grid-add     
+            camera-button   @top add-gadget*     
         <shelf>  1 >>fill
             "Roll left\n (ctl)"  [ rotation-step  roll-left  ] 
                 camera-button   add-gadget  
             "Roll right\n(ctl)"  [ rotation-step  roll-right ] 
                 camera-button   add-gadget  
-        @center grid-add 
+        @center add-gadget* 
 ;
 
 : menu-translations-3D ( -- gadget )
     3 3 <frame>
         { 1 1 } >>filled-cell
         "left\n(alt)"        [ translation-step  strafe-left  ]
-            camera-button @left grid-add  
+            camera-button @left add-gadget*  
         "right\n(alt)"       [ translation-step  strafe-right ]
-            camera-button @right grid-add     
+            camera-button @right add-gadget*     
         "Strafe up \n (alt)" [ translation-step strafe-up    ] 
-            camera-button @top grid-add
+            camera-button @top add-gadget*
         "Strafe down\n (alt)" [ translation-step strafe-down  ]
-            camera-button @bottom grid-add    
+            camera-button @bottom add-gadget*    
         <pile>  1 >>fill
             "Forward (ctl)"  [  translation-step step-turtle ] 
                 camera-button add-gadget
             "Backward (ctl)" 
                 [ translation-step neg step-turtle ] 
                 camera-button   add-gadget
-        @center grid-add
+        @center add-gadget*
 ;
 
 : menu-quick-views ( -- gadget )

@@ -7,7 +7,7 @@ IN: ui.gadgets.frames.tests
 [ { 1000 1000 } ] [
     1 1 <frame>
     { 0 0 } >>filled-cell
-    <gadget> dup "c" set { 0 0 } grid-add
+    <gadget> dup "c" set { 0 0 } add-gadget*
     { 1000 1000 } >>dim
     layout
     "c" get dim>>
@@ -16,8 +16,8 @@ IN: ui.gadgets.frames.tests
 [ t ] [
     1 2 <frame>
         { 0 0 } >>filled-cell
-        "Hello world" <label> { 0 0 } grid-add
-        "Hello world" <label> { 0 1 } grid-add
+        "Hello world" <label> { 0 0 } add-gadget*
+        "Hello world" <label> { 0 1 } add-gadget*
         dup pref-dim "dim1" set
         { 1000 1000 } >>dim
         dup layout*
@@ -30,10 +30,10 @@ IN: ui.gadgets.frames.tests
     2 3 <frame>
     { 0 1 } >>filled-cell
     { 5 5 } >>gap
-    <gadget> { 10 10 } >>dim { 0 0 } grid-add
-    <gadget> { 10 10 } >>dim dup "c" set { 0 1 } grid-add
-    <gadget> { 10 20 } >>dim { 0 2 } grid-add
-    <gadget> { 30 10 } >>dim { 1 1 } grid-add
+    <gadget> { 10 10 } >>dim { 0 0 } add-gadget*
+    <gadget> { 10 10 } >>dim dup "c" set { 0 1 } add-gadget*
+    <gadget> { 10 20 } >>dim { 0 2 } add-gadget*
+    <gadget> { 30 10 } >>dim { 1 1 } add-gadget*
     { 65 70 } >>dim
     layout
     "c" get [ loc>> ] [ dim>> ] bi

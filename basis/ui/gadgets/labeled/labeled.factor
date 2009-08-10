@@ -17,9 +17,9 @@ TUPLE: labeled-gadget < frame content ;
     <image-pen> t >>fill? >>interior ;
 
 : /-FOO-\ ( title labeled -- labeled )
-    "title-left" corner-icon @top-left grid-add
-    swap <labeled-title> @top grid-add
-    "title-right" corner-icon @top-right grid-add ;
+    "title-left" corner-icon @top-left add-gadget*
+    swap <labeled-title> @top add-gadget*
+    "title-right" corner-icon @top-right add-gadget* ;
 
 M: labeled-gadget focusable-child* content>> ;
 
