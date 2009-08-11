@@ -509,34 +509,21 @@ M: table viewport-column-header
 
 PRIVATE>
 
-! Using quots gives functional flavor
-! No reason to force an object oriented style
-TUPLE: quot-table < table
+! Rendering with quots
+TUPLE: quot-renderer
 { quot initial: [ ] }
 { val-quot initial: [ ] }
 { color-quot initial: [ drop f ] }
-column-titles column-alignment actions hooks ;
+column-titles column-alignment ;
 
-M: quot-table column-titles column-titles>> ;
-M: quot-table column-alignment column-alignment>> ;
-M: quot-table row-columns quot>> call( a -- b ) ;
-M: quot-table row-value val-quot>> call( a -- b ) ;
-M: quot-table row-color color-quot>> call( a -- b ) ;
+: <quot-renderer> ( -- quots ) quot-renderer new ;
 
-M: quot-table output-model dup val-quot>> [ selection>> ] [ selection-index>> ] if ;
+M: quot-renderer column-titles column-titles>> ;
+M: quot-renderer column-alignment column-alignment>> ;
+M: quot-renderer row-columns quot>> call( a -- b ) ;
+M: quot-renderer row-value val-quot>> call( a -- b ) ;
+M: quot-renderer row-color color-quot>> call( a -- b ) ;
 
-: indexed ( table -- table ) f >>val-quot ;
-
-: new-quot-table ( model class -- table )
-    f swap new-table dup >>renderer
-    f <model> >>actions f <model> >>hooks
-    dup actions>> [ set-model ] curry >>action
-    dup hooks>> [ set-model ] curry >>hook ;
-
-: <quot-table> ( model -- table ) quot-table new-quot-table ;
-
-: <quot-table*> ( -- table ) { } <model> <quot-table> ;
-
-: <list> ( model -- table ) <quot-table> [ 1array ] >>quot ;
-
-: <list*> ( -- table ) { } <model> <list> ;
+! Rendering basic lists
+SINGLETON: list-renderer
+M: list-renderer row-columns drop 1array ;

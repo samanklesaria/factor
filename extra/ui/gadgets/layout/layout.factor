@@ -65,32 +65,17 @@ SYNTAX: $ CREATE-WORD dup
     [ [ dup templates get at [ nip , ] [ not-in-template ] if* ] curry (( -- )) define-declared "$" expect ]
     [ [ <placeholder> [ swap templates get set-at ] keep , ] curry ] bi over push-all ;
 
-<PRIVATE
-: insert-gadget ( number parent gadget -- ) -rot [ but-last insert-nth ] change-children drop ;
-: insert-size ( number parent size -- ) -rot [ but-last insert-nth ] change-sizes drop ;
-PRIVATE>
 : insertion-point ( placeholder -- number parent ) dup parent>> [ children>> index ] keep ;
 
-<PRIVATE
-GENERIC: >layout ( gadget -- layout )
-M: gadget >layout f <layout> ;
-M: layout >layout ;
-PRIVATE>
-
-GENERIC# (add-gadget-at) 2 ( parent item n -- )
-M: gadget (add-gadget-at) -rot [ add-gadget ] keep insert-gadget ;
-M: track (add-gadget-at) -rot >layout [ add-layout ] keep [ gadget>> insert-gadget ] [ size>> insert-size ] 3bi ;
-
-GENERIC# add-gadget-at 1 ( item location -- )
-M: object add-gadget-at insertion-point -rot (add-gadget-at) ;
-M: model add-gadget-at parent>> dup book:book? [ "No models in books" throw ]
+GENERIC# add-before 1 ( item location -- )
+M: gadget add-before insertion-point -rot add-gadget-at drop ;
+M: layout add-before insertion-point rot [ gadget>> ] [ size>> ] bi [ rot ] dip add-gadget-at* drop ;
+M: model add-before parent>> dup book:book? [ "No models in books" throw ]
    [ dup model>> dup collection? [ nip swap add-connection ] [ drop [ 1array <collection> ] dip (>>model) ] if ] if ;
-: add-gadget*-at ( item location size -- ) swap [ <layout> ] dip add-gadget-at ;
-: (add-gadget*-at) ( parent item n size -- ) swap [ <layout> ] dip (add-gadget-at) ;
 
 <PRIVATE
 : insert-item ( item location -- ) [ dup get [ drop ] [ remove-members ] if ] [ on ] [ ] tri
-    [ add-member ] 2keep add-gadget-at ;
+    [ add-member ] 2keep add-before ;
 
 : insert-items ( makelist -- ) t swap [ dup placeholder? [ nip ] [ over insert-item ] if ] each drop ;
 PRIVATE>

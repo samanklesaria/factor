@@ -262,12 +262,3 @@ PRIVATE>
 
 : add-toolbar ( track -- track )
     dup <toolbar> { 3 3 } <border> align-left f add-gadget* ;
-
-TUPLE: button* < button value ;
-
-: <button*> ( label -- button )
-    [ [ [ value>> ] keep or ] keep set-control-value ] button* new-button ;
-
-: <border-button*> ( label -- button ) <button*> border-button-theme ;
-
-SYNTAX: IMG-BUTTON*: image-prep [ <button*> ] curry over push-all ;

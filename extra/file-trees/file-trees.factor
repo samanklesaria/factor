@@ -43,6 +43,6 @@ DEFER: (tree-insert)
    go-to-path ;
 
 : <dir-table> ( tree-model -- table )
-   <list*> [ node>> 1array ] >>quot
+   <quot-renderer> [ node>> 1array ] >>quot <table*>
    [ selection>> [ file? not ] filter-model swap switch-models ]
    [ swap >>model ] bi ;
