@@ -17,12 +17,12 @@ TUPLE: magic-slider < slider ;
 
 : squish-gadget ( gadget -- ) { 0 0 } >>pref-dim drop ;
 
-: unsquish-gadget ( gadget -- ) { 100 16 } >>pref-dim drop ;
+: unsquish-gadget ( gadget -- ) dup pref-dim* >>pref-dim drop ;
 
 
 M: magic-slider model-changed [ call-next-method ] 2keep swap value>>
     [ second ] [ fourth ] bi < [ unsquish-gadget ] [ squish-gadget ] if ;
 
 TUPLE: magic-scroller < scroller ;
-: <magic-scroller> ( gadget -- scroller ) magic-scroller new-scroller ;
+: <magic-scroller> ( gadget -- scroller ) magic-scroller new-scroller { 0 0 } >>gap ;
 M: magic-scroller (build-children) <magic-slider> ;

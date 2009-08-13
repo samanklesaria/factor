@@ -11,9 +11,9 @@ TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
 : <popped> ( text -- gadget ) <basic> init-model popped popped-editor new-field swap >>model t >>clipped? ;
 
-: set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
+: set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth [ prefer ] [ relayout ] bi ;
 : new-popped ( popped -- ) insertion-point "" <popped>
-    [ rot 1 + f (add-gadget*-at) ] keep [ relayout ] [ request-focus ] bi ;
+    [ rot 1 + f add-gadget-at* drop ] keep [ relayout ] [ request-focus ] bi ;
 : focus-prev ( popped -- ) dup parent>> children>> length 1 =
     [ drop ] [
         insertion-point [ 1 - dup -1 = [ drop 1 ] when ] [ children>> ] bi* nth
@@ -45,7 +45,8 @@ M: popper model-changed
     [ children>> [ unparent ] each ]
     [ [ value>> [ <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi ;
 
-M: popped pref-dim* editor>>
-    [ pref-dim* first ] [ line-height ] bi 2array ;
+M: popped-editor pref-dim* dup focused?>>
+    [ call-next-method ]
+    [ [ call-next-method first ] [ line-height ] bi 2array ] if ;
 
 M: popper focusable-child* children>> [ t ] [ first ] if-empty ;

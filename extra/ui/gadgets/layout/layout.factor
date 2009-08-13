@@ -7,10 +7,11 @@ QUALIFIED-WITH: ui.gadgets.books book
 IN: ui.gadgets.layout
 DEFER: with-interface
 
+TUPLE: layout gadget size ; C: <layout> layout
+
 <PRIVATE
 
 SYMBOL: templates
-TUPLE: layout gadget size ; C: <layout> layout
 TUPLE: placeholder < gadget members ;
 : <placeholder> ( -- placeholder ) placeholder new V{ } clone >>members ;
 
