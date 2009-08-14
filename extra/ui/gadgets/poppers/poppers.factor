@@ -39,7 +39,8 @@ popped H{
 } set-gestures
 
 M: popper handle-gesture swap T{ button-down f f 1 } =
-[ hand-click# get 2 = [ initial-popped f ] [ drop t ] if ] [ drop t ] if ;
+    [ dup hand-gadget get = hand-click# get 2 = and [ initial-popped f ] [ drop t ] if ]
+    [ drop t ] if ;
 
 M: popper model-changed
     [ children>> [ unparent ] each ]
