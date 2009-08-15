@@ -38,7 +38,7 @@ TUPLE: biggie < frame placeholder big? ;
 M: biggie hide-glass-hook
     [ f >>big? drop ]
     [ [ placeholder>> ] keep over layout-info <layout> over add-before unparent ]
-    [ f >>placeholder drop ] tri ;
+    [ f >>placeholder send-lose-focus ] tri ;
 
 biggie H{
     { T{ button-up } [ hand-click# get 1 = [ handle-button-up ] [ drop ] if ] }
