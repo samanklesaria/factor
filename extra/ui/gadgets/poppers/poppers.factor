@@ -4,26 +4,28 @@ USING: arrays accessors combinators kernel math
 models models.combinators namespaces sequences
 ui.gadgets ui.gadgets.layout ui.gadgets.tracks
 ui.gestures ui.gadgets.line-support
-ui.gadgets.editors ;
+ui.gadgets.editors fry models.product ;
 IN: ui.gadgets.poppers
 
 TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
-: <popped> ( text -- gadget ) <basic> init-model popped popped-editor new-field swap >>model t >>clipped? ;
+: <popped> ( popper text -- gadget ) <model> init-model
+    [ [ fields>> ] dip add-to-product ]
+    [ popped popped-editor new-field swap >>model t >>clipped? ] bi ;
 
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
-: new-popped ( popped -- ) insertion-point "" <popped>
+: new-popped ( popped -- ) [ insertion-point ] [ parent>> "" <popped> ] bi
     [ rot 1 + f add-gadget-at* drop ] keep [ relayout ] [ request-focus ] bi ;
 : focus-prev ( popped -- ) dup parent>> children>> length 1 =
     [ drop ] [
         insertion-point [ 1 - dup -1 = [ drop 1 ] when ] [ children>> ] bi* nth
         [ request-focus ] [ editor>> end-of-document ] bi
     ] if ;
-: initial-popped ( popper -- ) "" <popped> [ f add-gadget* drop ] keep request-focus ;
+: initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
-TUPLE: popper < track { unfocus-hook initial: [ drop ] } ;
+TUPLE: popper < track { unfocus-hook initial: [ drop ] } fields ;
 ! list of strings is model (make shown objects implement sequence protocol)
-: <popper> ( model -- popper ) vertical popper new-track swap >>model ;
+: <popper> ( model -- popper ) vertical popper new-track swap >>model V{ } clone <product> >>fields ;
 
 popped H{
     { gain-focus [ 1 set-expansion ] }
@@ -38,13 +40,15 @@ popped H{
     ] }
 } set-gestures
 
+! poppers will have to set their models
+! test this with no biggies for a while
 M: popper handle-gesture swap T{ button-down f f 1 } =
     [ dup hand-gadget get = hand-click# get 2 = and [ initial-popped f ] [ drop t ] if ]
     [ drop t ] if ;
 
 M: popper model-changed
     [ children>> [ unparent ] each ]
-    [ [ value>> [ <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi ;
+    [ dup '[ value>> [ _ swap <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi ;
 
 M: popped pref-dim* dup focus>>
     [ call-next-method ]

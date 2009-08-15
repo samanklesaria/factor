@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors arrays hashtables kernel math namespaces
 make sequences quotations math.vectors combinators sorting
-binary-search vectors dlists deques models threads classes
+binary-search vectors dlists deques models threads
 concurrency.flags math.order math.rectangles fry locals ;
 IN: ui.gadgets
 
@@ -385,22 +385,12 @@ M: gadget add-info-at 3drop ;
 
 <PRIVATE
 
-: move-from ( child old-parent -- old-info )
-    over parent>>
-    [
-        [ class ] bi@ =
-        [ dup layout-info ] [ f ] if
-    ] [ drop f ] if*
-    [ unparent ] dip ;
-
 :: (with-layout) ( parent child info quot -- parent )
-    [let | info' [ info dup default = [ child parent move-from swap or ] when ] |
-        info' child parent
-            [ >>parent drop ]
-            [ quot call( info child parent -- ) ]
-            [ graft-state>> second [ graft ] [ drop ] if ] 2tri
-        parent
-    ] ;
+    info child parent
+    [ >>parent drop ]
+    [ quot call( info child parent -- ) ]
+    [ graft-state>> second [ graft ] [ drop ] if ] 2tri
+    parent ;
 
 : with-layout ( parent child info quot -- parent )
     not-in-layout (with-layout) dup relayout ;

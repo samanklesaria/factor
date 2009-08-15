@@ -101,5 +101,8 @@ M: (when-model) (model-changed) [ quot>> ] 2keep
 ! only used in construction
 : with-self ( quot: ( model -- model ) -- model ) [ f <basic> dup ] dip call swap [ add-dependency ] keep ; inline
 
+: add-to-product ( product model -- ) [ swap add-dependency ]
+    [ add-connection ] [ activate-model update-model ] 2tri ;
+
 USE: models.combinators.templates
 << { "$>" "<$" "fmap" } [ fmaps ] each >>
