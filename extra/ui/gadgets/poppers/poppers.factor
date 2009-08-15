@@ -10,7 +10,7 @@ IN: ui.gadgets.poppers
 TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
 : <popped> ( popper text -- gadget ) <model> init-model
-    [ [ fields>> ] dip add-to-product ]
+    [ [ model>> ] dip add-to-product ]
     [ popped popped-editor new-field swap >>model t >>clipped? ] bi ;
 
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
@@ -23,9 +23,9 @@ TUPLE: popped-editor < multiline-editor ;
     ] if ;
 : initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
-TUPLE: popper < track { unfocus-hook initial: [ drop ] } fields ;
+TUPLE: popper < track { unfocus-hook initial: [ drop ] } ;
 ! list of strings is model (make shown objects implement sequence protocol)
-: <popper> ( model -- popper ) vertical popper new-track swap >>model V{ } clone <product> >>fields ;
+: <popper> ( model -- popper ) vertical popper new-track swap V{ } clone <product> 2merge >>model ;
 
 popped H{
     { gain-focus [ 1 set-expansion ] }
@@ -46,9 +46,11 @@ M: popper handle-gesture swap T{ button-down f f 1 } =
     [ dup hand-gadget get = hand-click# get 2 = and [ initial-popped f ] [ drop t ] if ]
     [ drop t ] if ;
 
-M: popper model-changed
-    [ children>> [ unparent ] each ]
-    [ dup '[ value>> [ _ swap <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi ;
+M: popper model-changed 2dup model>> =
+    [ 2drop ] [
+        [ clear-gadget ]
+        [ dup '[ value>> [ _ swap <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi
+    ] if ;
 
 M: popped pref-dim* dup focus>>
     [ call-next-method ]
