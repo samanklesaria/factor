@@ -1,7 +1,7 @@
 USING: accessors kernel math.rectangles ui.gadgets
 ui.gadgets.frames ui.gadgets.glass math sequences
 ui.gadgets.layout ui.gestures namespaces
-ui.gadgets.worlds math.vectors combinators arrays ;
+ui.gadgets.worlds math.vectors combinators arrays ui.tools.inspector ;
 IN: ui.gadgets.biggies
 
 TUPLE: biggie < frame placeholder big? ;
