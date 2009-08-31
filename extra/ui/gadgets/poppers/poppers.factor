@@ -9,8 +9,10 @@ IN: ui.gadgets.poppers
 
 TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
+TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook ;
+
 : <popped> ( popper text -- gadget ) <model> init-model
-    [ [ model>> ] dip add-to-product ]
+    [ [ submodels>> ] dip add-to-product ]
     [ popped popped-editor new-field swap >>model t >>clipped? ] bi ;
 
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
@@ -23,14 +25,16 @@ TUPLE: popped-editor < multiline-editor ;
     ] if ;
 : initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
-TUPLE: popper < track { unfocus-hook initial: [ drop ] } ;
-! list of strings is model (make shown objects implement sequence protocol)
-: <popper> ( model -- popper ) vertical popper new-track swap V{ } clone <product> 2merge >>model ;
+: <popper> ( model -- popper ) vertical popper new-track swap >>model
+    V{ } clone <product> [ add-connection ] 2keep >>submodels ;
 
 popped H{
-    { gain-focus [ 1 set-expansion ] }
+    { gain-focus [
+        [ 1 set-expansion ]
+        [ [ model>> value>> ] [ parent>> focus-hook>> ] bi call( a -- ) ] bi
+    ] }
     { lose-focus [ dup parent>>
-        [ [ unfocus-hook>> call( a -- ) ] curry [ f set-expansion ] bi ]
+        [ '[ model>> value>> _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
         [ drop ] if*
     ] }
     { T{ key-up f f "RET" } [ dup editor>> delete-previous-character new-popped ] }
@@ -40,17 +44,18 @@ popped H{
     ] }
 } set-gestures
 
-! poppers will have to set their models
-! test this with no biggies for a while
 M: popper handle-gesture swap T{ button-down f f 1 } =
     [ dup hand-gadget get = hand-click# get 2 = and [ initial-popped f ] [ drop t ] if ]
     [ drop t ] if ;
 
 M: popper model-changed 2dup model>> =
-    [ 2drop ] [
-        [ clear-gadget ]
-        [ dup '[ value>> [ _ swap <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi
-    ] if ;
+    [ dup update?>>
+        [
+            [ [ submodels>> clear-product ] [ clear-gadget ] bi ]
+            [ dup '[ value>> [ _ swap <popped> ] map ] dip [ f add-gadget* ] reduce request-focus ] bi
+        ] [ t >>update? 2drop ] if
+    ]
+    [ f >>update? [ value>> ] dip model>> set-model ] if ;
 
 M: popped pref-dim* dup focus>>
     [ call-next-method ]

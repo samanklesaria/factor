@@ -594,7 +594,7 @@ M: field pref-dim*
     [ line-gadget-width ] [ drop second ] 2bi 2array
     border-pref-dim ;
 
-TUPLE: model-field < field ;
+TUPLE: model-field < field { update? initial: t } ;
 
 : init-model ( object -- object ) [ [ ] [ "" ] if* ] change-value ;
 
@@ -614,13 +614,21 @@ M: model-field ungraft*
     [ dup model>> remove-connection ] bi ;
 
 M: model-field model-changed 2dup model>> =
-    [ [ value>> ] [ editor>> ] bi* set-editor-string ]
-    [ nip [ editor>> editor-string ] [ model>> ] bi set-model ] if ;
+    [ dup update?>>
+        [ [ value>> ] [ editor>> ] bi* set-editor-string ]
+        [ t >>update? 2drop ] if
+    ]
+    [ nip f >>update?
+      [ editor>> editor-string ] [ model>> ] bi set-model
+    ] if ;
 
 TUPLE: action-field < field { quot initial: [ dup set-control-value ] } ;
 
+: <action-field*> ( -- gadget )
+    action-field editor new-field ;
+
 : <action-field> ( quot -- gadget )
-    action-field editor new-field swap >>quot ;
+    <action-field*> swap >>quot ;
 
 : invoke-action-field ( field -- )
     [ editor>> editor-string ]

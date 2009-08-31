@@ -102,7 +102,11 @@ M: (when-model) (model-changed) [ quot>> ] 2keep
 : with-self ( quot: ( model -- model ) -- model ) [ f <basic> dup ] dip call swap [ add-dependency ] keep ; inline
 
 : add-to-product ( product model -- ) [ swap add-dependency ]
-    [ add-connection ] [ activate-model update-model ] 2tri ;
+    [ add-connection ] [ drop update-model ] 2tri ;
+
+: clear-product ( product -- )
+    [ dup dependencies>> [ remove-connection ] with each ]
+    [ dependencies>> delete-all ] bi ;
 
 USE: models.combinators.templates
 << { "$>" "<$" "fmap" } [ fmaps ] each >>
