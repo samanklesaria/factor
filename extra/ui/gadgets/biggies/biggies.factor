@@ -41,6 +41,6 @@ M: biggie hide-glass-hook
     [ f >>placeholder send-lose-focus ] tri ;
 
 biggie H{
-    { T{ button-up } [ hand-click# get 1 = [ handle-button-up ] [ drop ] if ] }
+    { T{ child-gesture f T{ button-up } } [ hand-click# get 1 = [ handle-button-up ] [ drop ] if ] }
     { mouse-leave [ dup big?>> [ small-gadget ] [ drop ] if ] }
 } set-gestures

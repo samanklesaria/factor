@@ -52,8 +52,11 @@ TUPLE: propagate-gesture gesture gadget ;
 M: propagate-gesture send-queued-gesture
     [ gesture>> ] [ gadget>> ] bi resend-gesture drop ;
 
+TUPLE: child-gesture gesture ;
+
 : propagate-gesture ( gesture gadget -- )
-    \ propagate-gesture queue-gesture ;
+    \ propagate-gesture [ queue-gesture ] 3keep
+    [ child-gesture boa ] 2dip queue-gesture ;
 
 TUPLE: propagate-key-gesture gesture world ;
 
