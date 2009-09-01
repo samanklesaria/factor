@@ -60,3 +60,5 @@ M: popper model-changed 2dup model>> =
 M: popped pref-dim* dup focus>>
     [ call-next-method ]
     [ [ call-next-method first ] [ editor>> line-height ] bi 2array ] if ;
+
+M: popped ungraft* [ send-lose-focus ] [ call-next-method ] bi ;
