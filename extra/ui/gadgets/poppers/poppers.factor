@@ -25,6 +25,17 @@ TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook ;
     ] if ;
 : initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
+: delete-popped ( popped -- )
+    dup editor>> editor-string "" =
+    [
+        dup fatal?>> [
+            {
+                [ model>> ] [ parent>> submodels>> product-delete ]
+                [ focus-prev ] [ unparent ]
+            } cleave
+        ] [ t >>fatal? drop ] if
+    ] [ f >>fatal? drop ] if ;
+
 : <popper> ( model -- popper ) vertical popper new-track swap >>model
     V{ } clone <product> [ add-connection ] 2keep >>submodels ;
 
@@ -38,10 +49,7 @@ popped H{
         [ drop ] if*
     ] }
     { T{ key-up f f "RET" } [ dup editor>> delete-previous-character new-popped ] }
-    { T{ key-up f f "BACKSPACE" } [ dup editor>> editor-string "" =
-        [ dup fatal?>> [ [ focus-prev ] [ unparent ] bi ] [ t >>fatal? drop ] if ]
-        [ f >>fatal? drop ] if
-    ] }
+    { T{ key-up f f "BACKSPACE" } [ delete-popped ] }
 } set-gestures
 
 M: popper handle-gesture swap T{ button-down f f 1 } =
@@ -61,4 +69,5 @@ M: popped pref-dim* dup focus>>
     [ call-next-method ]
     [ [ call-next-method first ] [ editor>> line-height ] bi 2array ] if ;
 
-M: popped ungraft* [ send-lose-focus ] [ call-next-method ] bi ;
+M: popped ungraft*
+    [ send-lose-focus ] [ call-next-method ] bi ;

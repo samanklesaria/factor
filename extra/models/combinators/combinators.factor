@@ -108,5 +108,9 @@ M: (when-model) (model-changed) [ quot>> ] 2keep
     [ dup dependencies>> [ remove-connection ] with each ]
     [ dependencies>> delete-all ] bi ;
 
+: product-delete ( model product -- )
+    [ dependencies>> delete ]
+    [ swap remove-connection ] 2bi ;
+
 USE: models.combinators.templates
 << { "$>" "<$" "fmap" } [ fmaps ] each >>
