@@ -9,11 +9,22 @@ IN: ui.gadgets.poppers
 
 TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
-TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook ;
+TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook
+    { quot initial: [ ] } { setter-quot initial: [ ] } ;
 
 : <popped> ( popper text -- gadget ) <model> init-model
     [ [ submodels>> ] dip add-to-product ]
     [ popped popped-editor new-field swap >>model t >>clipped? ] bi ;
+
+M: popped model-changed
+    2dup model>> = [
+        dup update?>>
+        [ [ value>> ] [ [ parent>> quot>> call( a -- b ) ] [ editor>> ] bi ] bi* set-editor-string ]
+        [ t >>update? 2drop ] if
+    ] [
+        nip f >>update?
+        [ [ editor>> editor-string ] keep parent>> setter-quot>> call( a -- b ) ] [ model>> ] bi set-model
+    ] if ;
 
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
 : new-popped ( popped -- ) [ insertion-point ] [ parent>> "" <popped> ] bi
@@ -25,15 +36,16 @@ TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook ;
     ] if ;
 : initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
 
+: (delete-popped) ( popped -- )
+    {
+        [ model>> ] [ parent>> submodels>> product-delete ]
+        [ focus-prev ] [ unparent ]
+    } cleave ;
+
 : delete-popped ( popped -- )
     dup editor>> editor-string "" =
     [
-        dup fatal?>> [
-            {
-                [ model>> ] [ parent>> submodels>> product-delete ]
-                [ focus-prev ] [ unparent ]
-            } cleave
-        ] [ t >>fatal? drop ] if
+        dup fatal?>> [ (delete-popped) ] [ t >>fatal? drop ] if
     ] [ f >>fatal? drop ] if ;
 
 : <popper> ( model -- popper ) vertical popper new-track swap >>model
@@ -44,9 +56,12 @@ popped H{
         [ 1 set-expansion ]
         [ dup parent>> focus-hook>> call( a -- ) ] bi
     ] }
-    { lose-focus [ dup parent>>
-        [ '[ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
-        [ drop ] if*
+    { lose-focus [ dup control-value empty?
+        [ (delete-popped) ] [
+            dup parent>>
+            [ '[ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
+            [ drop ] if*
+        ] if
     ] }
     { T{ key-up f f "RET" } [ dup editor>> delete-previous-character new-popped ] }
     { T{ key-up f f "BACKSPACE" } [ delete-popped ] }
