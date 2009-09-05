@@ -1,4 +1,4 @@
-USING: arrays kernel locals math sequences ;
+USING: arrays kernel locals math sequences math.order ;
 IN: sequences.extras
 : reduce1 ( seq quot -- result ) [ unclip ] dip reduce ; inline
 
@@ -18,4 +18,6 @@ IN: sequences.extras
 : find-all ( seq quot -- elts ) [ [ length iota ] keep ] dip
     [ dupd call( a -- ? ) [ 2array ] [ 2drop f ] if ] curry 2map [ ] filter ; inline
 
-: insert-sorted ( elt seq -- seq ) 2dup [ < ] with find drop over length or swap insert-nth ;
+: insert-sorted ( elt seq quot -- seq ) [ 2dup ] dip with find drop over length or swap insert-nth ; inline
+
+: insert-nat-sorted ( elt seq -- seq ) [ before? ] insert-sorted ;

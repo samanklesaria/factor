@@ -1,7 +1,7 @@
 USING: accessors kernel math.rectangles ui.gadgets
 ui.gadgets.frames ui.gadgets.glass math sequences
-ui.gadgets.layout ui.gestures namespaces
-ui.gadgets.worlds math.vectors combinators arrays ui.tools.inspector ;
+ui.gadgets.layout ui.gestures namespaces ui.private
+ui.gadgets.worlds math.vectors combinators ;
 IN: ui.gadgets.biggies
 
 TUPLE: biggie < frame placeholder big? ;
@@ -27,7 +27,10 @@ TUPLE: biggie < frame placeholder big? ;
         [ >>placeholder ]
         [ over layout-info <layout> swap add-before ] bi ;
 
-: small-gadget ( biggie -- ) hide-glass ;
+: small-gadget ( biggie -- )
+    [ [ dup focus>> dup [ nip dup ] when ] loop parents [ send-lose-focus ] each
+    send-queued-gestures ]
+    [ hide-glass ] bi ;
 
 : handle-button-up ( gadget -- )
     dup big?>> [ drop ] [ 

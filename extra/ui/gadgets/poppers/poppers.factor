@@ -42,10 +42,10 @@ TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook ;
 popped H{
     { gain-focus [
         [ 1 set-expansion ]
-        [ [ model>> value>> ] [ parent>> focus-hook>> ] bi call( a -- ) ] bi
+        [ dup parent>> focus-hook>> call( a -- ) ] bi
     ] }
     { lose-focus [ dup parent>>
-        [ '[ model>> value>> _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
+        [ '[ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
         [ drop ] if*
     ] }
     { T{ key-up f f "RET" } [ dup editor>> delete-previous-character new-popped ] }
@@ -68,6 +68,3 @@ M: popper model-changed 2dup model>> =
 M: popped pref-dim* dup focus>>
     [ call-next-method ]
     [ [ call-next-method first ] [ editor>> line-height ] bi 2array ] if ;
-
-M: popped ungraft*
-    [ send-lose-focus ] [ call-next-method ] bi ;
