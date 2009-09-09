@@ -12,7 +12,7 @@ TUPLE: popped-editor < multiline-editor ;
 TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook
     { quot initial: [ ] } { setter-quot initial: [ ] } ;
 
-: <popped> ( popper text -- gadget ) <model> init-model
+: <popped> ( popper value -- gadget ) <model>
     [ [ submodels>> ] dip add-to-product ]
     [ popped popped-editor new-field swap >>model t >>clipped? ] bi ;
 
@@ -26,15 +26,16 @@ M: popped model-changed
         [ [ editor>> editor-string ] keep parent>> setter-quot>> call( a -- b ) ] [ model>> ] bi set-model
     ] if ;
 
+: <empty-popped> ( popper -- popped ) "" over setter-quot>> call( a -- b ) <popped> ;
 : set-expansion ( popped size -- ) over dup parent>> [ children>> index ] [ sizes>> ] bi set-nth relayout ;
-: new-popped ( popped -- ) [ insertion-point ] [ parent>> "" <popped> ] bi
+: new-popped ( popped -- ) [ insertion-point ] [ parent>> <empty-popped> ] bi
     [ rot 1 + f add-gadget-at* drop ] keep [ relayout ] [ request-focus ] bi ;
 : focus-prev ( popped -- ) dup parent>> children>> length 1 =
     [ drop ] [
         insertion-point [ 1 - dup -1 = [ drop 1 ] when ] [ children>> ] bi* nth
         [ request-focus ] [ editor>> end-of-document ] bi
     ] if ;
-: initial-popped ( popper -- ) dup "" <popped> [ f add-gadget* drop ] keep request-focus ;
+: initial-popped ( popper -- ) dup <empty-popped> [ f add-gadget* drop ] keep request-focus ;
 
 : (delete-popped) ( popped -- )
     {
@@ -56,7 +57,7 @@ popped H{
         [ 1 set-expansion ]
         [ dup parent>> focus-hook>> call( a -- ) ] bi
     ] }
-    { lose-focus [ dup control-value empty?
+    { lose-focus [ dup editor>> editor-string empty?
         [ (delete-popped) ] [
             dup parent>>
             [ '[ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
@@ -83,3 +84,8 @@ M: popper model-changed 2dup model>> =
 M: popped pref-dim* dup focus>>
     [ call-next-method ]
     [ [ call-next-method first ] [ editor>> line-height ] bi 2array ] if ;
+
+M: popped graft*
+    [ dup editor>> model>> add-connection ]
+    [ dup model>> add-connection ]
+    [ [ model>> ] keep model-changed ] tri ;
