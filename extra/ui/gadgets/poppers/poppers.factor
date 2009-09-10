@@ -4,13 +4,15 @@ USING: arrays accessors combinators kernel math
 models models.combinators namespaces sequences
 ui.gadgets ui.gadgets.layout ui.gadgets.tracks
 ui.gestures ui.gadgets.line-support
-ui.gadgets.editors fry models.product ;
+ui.gadgets.editors fry models.product
+ui.tools.inspector ;
 IN: ui.gadgets.poppers
 
 TUPLE: popped < model-field { fatal? initial: t } ;
 TUPLE: popped-editor < multiline-editor ;
-TUPLE: popper < track submodels { update? initial: t } focus-hook unfocus-hook
-    { quot initial: [ ] } { setter-quot initial: [ ] } ;
+TUPLE: popper < track submodels { update? initial: t }
+    { focus-hook initial: [ drop ] } { unfocus-hook initial: [ drop ] }
+    { quot initial: [ ] } { setter-quot initial: [ ] } { delete-hook initial: [ drop ] } ;
 
 : <popped> ( popper value -- gadget ) <model>
     [ [ submodels>> ] dip add-to-product ]
@@ -39,15 +41,17 @@ M: popped model-changed
 
 : (delete-popped) ( popped -- )
     {
+        [ dup parent>> delete-hook>> call( a -- ) ]
         [ model>> ] [ parent>> submodels>> product-delete ]
         [ focus-prev ] [ unparent ]
     } cleave ;
 
+: if-empty-editor ( popped quot1 quot2 -- ) [ dup editor>> editor-string empty? ] 2dip if ; inline
+
 : delete-popped ( popped -- )
-    dup editor>> editor-string "" =
     [
         dup fatal?>> [ (delete-popped) ] [ t >>fatal? drop ] if
-    ] [ f >>fatal? drop ] if ;
+    ] [ f >>fatal? drop ] if-empty-editor ;
 
 : <popper> ( model -- popper ) vertical popper new-track swap >>model
     V{ } clone <product> [ add-connection ] 2keep >>submodels ;
@@ -57,12 +61,12 @@ popped H{
         [ 1 set-expansion ]
         [ dup parent>> focus-hook>> call( a -- ) ] bi
     ] }
-    { lose-focus [ dup editor>> editor-string empty?
-        [ (delete-popped) ] [
-            dup parent>>
-            [ '[ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ]
-            [ drop ] if*
-        ] if
+    { lose-focus [
+        dup parent>> dup
+        '[
+            [ (delete-popped) ]
+            [ [ _ unfocus-hook>> call( a -- ) ] [ f set-expansion ] bi ] if-empty-editor
+        ] [ drop ] if
     ] }
     { T{ key-up f f "RET" } [ dup editor>> delete-previous-character new-popped ] }
     { T{ key-up f f "BACKSPACE" } [ delete-popped ] }
