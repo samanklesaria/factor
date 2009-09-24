@@ -1,10 +1,12 @@
-USING: accessors assocs arrays fry kernel lexer make math.parser
-models monads namespaces parser sequences
-sequences.extras models.combinators ui.gadgets
+USING: accessors arrays assocs fry kernel lexer make math
+math.parser models models.arrow models.combinators models.fold
+models.multi models.product models.product.discrete monads
+namespaces parser sequences ui.gadgets
 ui.gadgets.tracks words ;
 QUALIFIED: make
 QUALIFIED-WITH: ui.gadgets.books book
 IN: ui.gadgets.layout
+
 DEFER: with-interface
 
 TUPLE: layout gadget size ; C: <layout> layout
@@ -44,23 +46,32 @@ M: model -> dup , ;
    [ [ dup layout? [ f <layout> ] unless ] map ]
    [ [ dup gadget? [ gadget>> ] unless ] map ] if ;
 : make-layout ( building sized? -- models layouts ) [ swap layouts ] curry
-   [ { } make [ [ model? ] filter ] ] dip bi ; inline
+   [ V{ } make [ [ model? ] filter ] ] dip bi ; inline
 : <box> ( gadgets type -- track )
    [ t make-layout ] dip <track>
    swap [ add-layout ] each
-   swap [ <collection> >>model ] unless-empty ; inline
+   swap merge >>model ; inline
 
-: make-book ( models gadgets model -- book ) book:<book> swap [ "No models in books" throw ] unless-empty ;
+: make-book ( models gadgets model -- book ) book:<book> nip ;
 
 ERROR: not-in-template word ;
 
 PRIVATE>
+
+: <hidden> ( models -- hidden )
+    t make-layout <gadget> swap [ add-layout ] each
+    swap <product> >>model f >>visible? ; inline
 
 : <hbox> ( gadgets -- track ) horizontal <box> ; inline
 : <vbox> ( gadgets -- track ) vertical <box> ; inline
 
 : <book> ( quot: ( -- model ) -- book ) f make-layout rot 0 >>value make-book ; inline
 : <book*> ( quot -- book ) f make-layout f make-book ; inline
+
+: cycle ( quot -- book )
+    f make-layout [ f make-book ] 2keep append [ output-model [ [ 1 ] <$ ] [ f ] if* ] map sift
+    [ '[ + dup _ length 1 - > [ drop 0 ] [ ] if ] ] keep
+    merge 0 rot fold >>model ; inline
 
 SYNTAX: $ CREATE-WORD dup
     [ [ dup templates get at [ nip , ] [ not-in-template ] if* ] curry (( -- )) define-declared "$" expect ]
@@ -71,8 +82,7 @@ SYNTAX: $ CREATE-WORD dup
 GENERIC# add-before 1 ( item location -- )
 M: gadget add-before insertion-point -rot add-gadget-at drop ;
 M: layout add-before insertion-point rot [ gadget>> ] [ size>> ] bi [ rot ] dip add-gadget-at* drop ;
-M: model add-before parent>> dup book:book? [ "No models in books" throw ]
-   [ dup model>> dup collection? [ nip swap add-connection ] [ drop [ 1array <collection> ] dip (>>model) ] if ] if ;
+M: model add-before parent>> model>> swap add-to-product ;
 
 <PRIVATE
 : insert-item ( item location -- ) [ dup get [ drop ] [ remove-members ] if ] [ on ] [ ] tri

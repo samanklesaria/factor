@@ -1,7 +1,7 @@
 ! Copyright (C) 2005, 2009 Slava Pestov, Daniel Ehrenberg.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors kernel kernel.private slots.private math
-math.private math.order ;
+USING: assocs accessors kernel kernel.private slots.private math
+math.private math.order locals ;
 IN: sequences
 
 MIXIN: sequence
@@ -941,3 +941,26 @@ PRIVATE>
             [ array-flip ] [ generic-flip ] if
         ] [ generic-flip ] if
     ] unless ;
+
+: reduce1 ( seq quot -- result ) [ unclip ] dip reduce ; inline
+
+:: reduce-r ( list identity quot: ( obj1 obj2 -- obj ) -- result )
+    list empty?
+    [ identity ]
+    [
+        list rest-slice identity quot reduce-r
+        list first quot call
+    ] if ; inline recursive
+
+! Quot must have static stack effect, unlike "reduce"
+:: reduce* ( seq id quot -- result ) seq
+    [ id ]
+    [ unclip id swap quot call( prev elt -- next ) quot reduce* ] if-empty ;
+
+:: combos ( list1 list2 -- result ) list2 [ [ 2array ] curry list1 swap map ] map concat ;
+
+: find-all ( seq quot -- assoc ) [ <enum> ] dip assoc-filter ; inline
+
+: insert-sorted ( elt seq quot -- seq ) [ 2dup ] dip with find drop over length or swap insert-nth ; inline
+
+: insert-nat-sorted ( elt seq -- seq ) [ before? ] insert-sorted ;

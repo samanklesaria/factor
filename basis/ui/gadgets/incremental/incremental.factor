@@ -2,10 +2,20 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: io kernel math namespaces math.vectors ui.gadgets
 ui.gadgets.private ui.gadgets.packs accessors
-math.rectangles combinators ;
+math.rectangles combinators vectors sequences ;
 IN: ui.gadgets.incremental
 
 TUPLE: incremental < pack cursor ;
+
+<PRIVATE
+: (add-gadget) ( child parent -- )
+    {
+        [ drop unparent ]
+        [ >>parent drop ]
+        [ [ ?push ] change-children drop ]
+        [ graft-state>> second [ graft ] [ drop ] if ]
+    } 2cleave ;
+PRIVATE>
 
 : <incremental> ( -- incremental )
     incremental new

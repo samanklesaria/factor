@@ -44,7 +44,7 @@ M: gadget model-changed 2drop ;
     model>> value>> ;
 
 GENERIC: output-model ( gadget -- model )
-M: object output-model drop f ;
+M: model output-model ;
 M: gadget output-model model>> ;
 
 : set-control-value ( value control -- )
@@ -419,13 +419,7 @@ PRIVATE>
         info swap index add-info-at
     ] curry with-layout ;
 
-: add-gadget-at ( parent gadget index -- parent ) f add-gadget-at* ;
-
-! Stupid incremental!
-<PRIVATE
-: (add-gadget) ( child parent -- ) swap f
-    [ [ ?push ] change-children 2drop ] (with-layout) drop ;
-PRIVATE>
+: add-gadget-at ( parent child index -- parent ) f add-gadget-at* ;
 
 USING: vocabs vocabs.loader ;
 

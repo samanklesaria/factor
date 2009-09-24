@@ -55,3 +55,16 @@ M: product set-range-min-value
 
 M: product set-range-max-value
     [ set-range-max-value ] set-product-value ;
+
+: add-to-product ( product model -- )
+    [ swap add-dependency ] 2keep
+    over ref>> 0 = [ 2drop ]
+    [ [ add-connection ] [ drop update-model ] 2bi ] if ;
+
+: clear-product ( product -- )
+    [ dup dependencies>> [ remove-connection ] with each ]
+    [ dependencies>> delete-all ] bi ;
+
+: product-delete ( model product -- )
+    [ dependencies>> delete ]
+    [ swap remove-connection ] 2bi ;

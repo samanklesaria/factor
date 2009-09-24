@@ -1,0 +1,1 @@
+Multi models don't always start out with a value

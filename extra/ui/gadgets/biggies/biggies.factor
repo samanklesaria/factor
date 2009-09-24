@@ -1,20 +1,21 @@
 USING: accessors kernel math.rectangles ui.gadgets
 ui.gadgets.frames ui.gadgets.glass math sequences
 ui.gadgets.layout ui.gestures namespaces ui.private
-ui.gadgets.worlds math.vectors combinators ;
+ui.gadgets.worlds math.vectors combinators models ;
 IN: ui.gadgets.biggies
 
 TUPLE: biggie < frame placeholder big? ;
 
 : <biggie> ( gadget -- biggie ) 1 1 biggie new-frame
     swap { 0 0 } add-gadget*
-    { 0 0 } >>filled-cell ;
+    { 0 0 } >>filled-cell f <model> >>model ;
 
 : fill-screen ( biggie -- dim )
     [ find-world dim>> ] [ screen-loc ] bi v-
     { 150 210 } [ over > [ .99 * ] [ .75 * ] if ] 2map ;
 
 : big-gadget ( biggie -- ) {
+       [ dup set-control-value ]
        [ placeholder>> ]
        [ fill-screen ]
        [ t >>big? unparent ]

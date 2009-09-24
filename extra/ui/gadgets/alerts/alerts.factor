@@ -1,10 +1,10 @@
-USING: accessors models monads macros generalizations kernel
-ui models.combinators ui.gadgets.layout ui.gadgets
-ui.gadgets.labels ui.gadgets.editors ui.gadgets.model-buttons
-ui.gadgets.packs locals sequences fonts io.styles
-wrap.strings ui.gadgets.buttons ;
-
+USING: accessors fonts generalizations kernel locals macros
+models.combinators monads sequences ui ui.gadgets
+ui.gadgets.buttons ui.gadgets.editors ui.gadgets.labels
+ui.gadgets.layout ui.gadgets.model-buttons ui.gadgets.packs
+wrap.strings models.filter ;
 IN: ui.gadgets.alerts
+
 :: alert ( quot string -- ) <pile> { 10 10 } >>gap 1 >>align
    string 22 wrap-lines <label> T{ font { name "sans-serif" } { size 18 } } >>font { 200 100 } >>pref-dim add-gadget 
    "okay" [ close-window ] quot append <border-button> add-gadget "" open-window ;

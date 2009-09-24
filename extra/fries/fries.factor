@@ -1,5 +1,5 @@
 USING: arrays vectors combinators effects kernel math sequences splitting
-strings.parser parser fry sequences.extras ;
+strings.parser parser fry ;
 IN: fries
 : str-fry ( str on -- quot ) split
     [ unclip-last [ [ spin glue ] reduce-r ] 2curry ]

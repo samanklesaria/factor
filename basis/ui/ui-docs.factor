@@ -202,9 +202,16 @@ ARTICLE: "ui-layout-basics" "Layout basics"
 $nl
 "Managing the gadget hierarchy:"
 { $subsection add-gadget }
-{ $subsection unparent }
+{ $subsection add-gadget-at }
 { $subsection add-gadgets }
+{ $subsection unparent }
 { $subsection clear-gadget }
+"Managing gadget layout:"
+{ $subsection add-gadget* }
+{ $subsection add-gadget-at* }
+{ $subsection layout-info }
+{ $subsection remove-info }
+{ $subsection clear-info }
 "The children of a gadget are available via the "
 { $snippet "children" } " slot. "
 $nl
@@ -228,7 +235,8 @@ ARTICLE: "ui-null-layout" "Manual layouts"
 "When automatic layout is not appropriate, gadgets can be added to a parent with no layout policy, and then positioned and sized manually by setting the " { $snippet "loc" } " field." ;
 
 ARTICLE: "ui-layout-impl" "Implementing layout gadgets"
-"The relayout process proceeds top-down, with parents laying out their children, which in turn lay out their children. Custom layout policy is implemented by defining a method on a generic word:"
+"To add child gadgets, layouts should first impliment the " { $link "ui-layout-protocol" } ". "
+"The relayout process then proceeds top-down, with parents laying out their children, which in turn lay out their children. Custom layout policy is implemented by defining a method on a generic word:"
 { $subsection layout* }
 "When a " { $link layout* } " method is called, the size and location of the gadget has already been determined by its parent, and the method's job is to lay out the gadget's children. Children can be positioned and resized by setting a pair of slots, " { $snippet "loc" } " and " { $snippet "dim" } "." $nl
 "Some assorted utility words which are useful for implementing layout logic:"

@@ -1,6 +1,7 @@
 USING: accessors arrays delegate delegate.protocols
-io.pathnames kernel locals make models.combinators sequences
-sequences.extras strings ui.gadgets.tables vectors ;
+io.pathnames kernel locals make models.combinators
+models.filter sequences strings
+ui.gadgets.tables vectors ;
 IN: file-trees
 
 TUPLE: walkable-vector vector father ;

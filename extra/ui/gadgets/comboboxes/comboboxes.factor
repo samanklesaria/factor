@@ -1,6 +1,6 @@
-USING: accessors arrays kernel math.rectangles
-models.combinators sequences ui.gadgets ui.gadgets.glass
-ui.gadgets.labels ui.gadgets.tables ui.gestures ;
+USING: accessors kernel math.rectangles models sequences
+ui.gadgets ui.gadgets.glass ui.gadgets.labels ui.gadgets.tables
+ui.gestures ;
 IN: ui.gadgets.comboboxes
 
 TUPLE: combo-table < table spawner ;
@@ -17,5 +17,5 @@ combobox H{
    { T{ button-down } [ dup table>> over >>spawner <zero-rect> show-glass ] }
 } set-gestures
 
-: <combobox> ( options -- combobox ) [ first [ combobox new-label ] keep <basic> >>model ] keep
-    <basic> list-renderer combo-table new-table >>table ;
+: <combobox> ( options -- combobox ) [ first [ combobox new-label ] keep <model> >>model ] keep
+    <model> list-renderer combo-table new-table >>table ;

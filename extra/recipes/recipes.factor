@@ -1,61 +1,80 @@
 USING: accessors arrays colors.constants combinators db.sqlite
-db.tuples db.types io.files.temp kernel locals math
-models.combinators monads persistency sequences ui.gadgets.buttons
-sequences.extras ui ui.gadgets.model-buttons ui.gadgets.editors
-ui.gadgets.labels ui.gadgets.layout ui.gadgets.scrollers
-ui.gadgets.tables ui.pens.solid ui.gadgets.model-tables ;
+db.tuples db.types io.files.temp kernel math models
+models.combinators models.fold models.multi monads persistency
+sequences ui ui.gadgets.buttons ui.gadgets.editors
+ui.gadgets.labels ui.gadgets.layout ui.gadgets.model-buttons
+ui.gadgets.model-tables ui.gadgets.scrollers ui.gadgets.tables
+ui.pens.solid enter math.order locals ;
 FROM: sets => prune ;
 IN: recipes
 
 STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { genre { VARCHAR 100 } } ;
-: <recipe> ( title genre text -- recipe ) recipe new swap >>txt swap >>genre swap >>title 0 >>votes ;
 "recipes.db" temp-file <sqlite-db> recipe define-db
-: top-recipes ( offset search -- recipes ) <query> T{ recipe } rot >>title >>tuple
-    "votes" >>order 30 >>limit swap >>offset get-tuples ;
-: top-genres ( -- genres ) f f top-recipes [ genre>> ] map prune 4 short head-slice ;
+: <recipe> ( -- recipe ) recipe new "" >>title "" >>genre "" >>txt 0 >>votes ;
 
-: interface ( -- book ) [ 
+: store-changes ( recipe title genre text -- recipe ) [ rot ] dip
+    >>txt swap >>genre swap >>title ;
+
+: top-recipes ( tuple offset -- recipes ) <query> rot >>tuple
+    "votes" >>order 30 >>limit swap >>offset get-tuples ;
+
+: top-genres ( recipes -- genres ) [ genre>> ] map prune 4 short head-slice ;
+
+: interface ( -- cycle ) [
      [
-        [ $ TOOLBAR $ ] <hbox> COLOR: AliceBlue <solid> >>interior ,
+        [ $ ACTIONS $ ] <hidden> ,
+        [ $ TOOLBAR $ <spacer> $ SEARCH $ ] <hbox> COLOR: AliceBlue <solid> >>interior ,
         [ "Genres:" <label> , <spacer> $ ALL $ $ GENRES $ ] <hbox>
             { 5 0 } >>gap COLOR: gray <solid> >>interior ,
         $ RECIPES $
+        $ SWITCH $
      ] <vbox> ,
      [
         [ "Title:" <label> , $ TITLE $ "Genre:" <label> , $ GENRE $ ] <hbox> ,
         $ BODY $
         $ BUTTON $
      ] <vbox> ,
-  ] <book*> { 350 245 } >>pref-dim ;
-  
-:: recipe-browser ( -- ) [ [
-    interface
-      <quot-renderer> [ [ title>> ] [ genre>> ] bi 2array ] >>quot
-        { "Title" "Genre" } >>column-titles <model-table*> :> tbl
-      "okay" <model-border-button> BUTTON -> :> ok
-      IMG-MODEL-BUTTON: submit [ store-tuple ] >>value TOOLBAR -> :> submit
-      IMG-MODEL-BUTTON: love 1 >>value TOOLBAR ->
-      IMG-MODEL-BUTTON: hate -1 >>value -> 2array merge :> votes
-      IMG-MODEL-BUTTON: back -> [ -30 ] <$
-      IMG-MODEL-BUTTON: more -> [ 30 ] <$ 2array merge :> viewed
-      <spacer> <model-field*> ->% 1 :> search
-      submit ok [ [ drop ] ] <$ 2array merge [ drop ] >>value :> quot
-      viewed 0 [ + ] fold search ok t <basic> "all" <model-button> ALL ->
-      tbl selection>> votes [ [ + ] curry change-votes modify-tuple ] 2$>
-        4array merge
-        [ drop [ f ] [ "%" dup surround <pattern> ] if-empty top-recipes ] 3fmap :> ups
-      ups [ top-genres [ <model-button> GENRES -> ] map merge ] bind*
-        [ button-text T{ recipe } swap >>genre get-tuples ] fmap
-      tbl swap ups 2merge >>model dup <scroller> RECIPES ,% 1 actions>>
-      submit [ "" dup dup <recipe> ] <$ 2array merge
-        { [ [ title>> ] fmap <model-field> TITLE ->% .5 ]
-          [ [ genre>> ] fmap <model-field> GENRE ->% .5 ]
-          [ [ txt>> ] fmap <multiline-field> BODY ->% 1 ]
-        } cleave
-        [ <recipe> ] 3fmap
-      [ [ 1 ] <$ ]
-      [ quot ok updates #1 [ call( recipe -- ) 0 ] 2fmap ] bi
-      2merge 0 <basic> switch-models >>model
-   ] with-interface "recipes" open-window ] with-ui ;
+  ] cycle { 350 245 } >>pref-dim ;
 
-MAIN: recipe-browser
+: position ( -- model ) TOOLBAR
+    IMG-MODEL-BUTTON: back [ -30 ] >>value ->
+    IMG-MODEL-BUTTON: more [ 30 ] >>value -> 
+    2merge 0 [ + 0 max ] fold ;
+
+: got-tuples ( tuples -- tuples' )
+    [ top-genres [ <model-button> GENRES -> ] map merge ] bind
+        [ button-text T{ recipe } swap >>genre ] fmap
+    "all" <model-button> T{ recipe } >>value ALL ->
+    <model-field*> SEARCH ->% 1
+        [ [ f ] [ "%" dup surround <pattern> ] if-empty T{ recipe } swap >>title ] fmap
+    3array merge T{ recipe } >>value position [ top-recipes ] 2fmap ;
+
+: votes ( -- model ) TOOLBAR
+    IMG-MODEL-BUTTON: love [ 1 + ] >>value ->
+    IMG-MODEL-BUTTON: hate [ 1 - ] >>value -> 2merge ;
+
+: viewed ( submissions -- tuple-model )
+    [let | ok [ "ok" <model-border-button> BUTTON -> dup SWITCH , ] |
+        dup [ got-tuples [ swap suffix ] fold* ok t >>value updates ] with-self
+        <quot-renderer> [ [ title>> ] [ genre>> ] bi 2array ] >>quot
+            { "Title" "Genre" } >>column-titles <model-table>
+            [ <scroller> RECIPES ,% 1 ] [ actions>> dup SWITCH , ] bi
+        2merge {
+            [ votes [ change-votes ] 2fmap ]
+            [ ok updates ]
+            [ [ title>> ] fmap <model-field> TITLE ->% .5 ]
+            [ [ genre>> ] fmap <model-field> GENRE ->% .5 ]
+            [ [ txt>> ] fmap <multiline-field> BODY ->% 1 ]
+        } cleave [ store-changes ] 4fmap 2merge
+    ] ;
+    
+: recipe-browser ( -- ) [
+        interface
+        TOOLBAR IMG-MODEL-BUTTON: submit -> dup SWITCH ,
+            [ <recipe> dup store-tuple ] <$
+        viewed [ modify-tuple ] $> ACTIONS ,
+    ] with-interface "recipes" open-window ;
+
+UI-ENTER: recipe-browser ;
+
+! cycles should auto-skip placeholders

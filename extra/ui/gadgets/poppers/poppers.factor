@@ -1,11 +1,9 @@
 ! Copyright (C) 2009 Sam Anklesaria
 ! See http://factorcode.org/license.txt for BSD license.
-USING: arrays accessors combinators kernel math
-models models.combinators namespaces sequences
-ui.gadgets ui.gadgets.layout ui.gadgets.tracks
-ui.gestures ui.gadgets.line-support
-ui.gadgets.editors fry models.product
-ui.tools.inspector ;
+USING: accessors arrays combinators fry kernel math models
+models.product namespaces sequences ui.gadgets
+ui.gadgets.editors ui.gadgets.layout ui.gadgets.line-support
+ui.gadgets.tracks ui.gestures ;
 IN: ui.gadgets.poppers
 
 TUPLE: popped < model-field { fatal? initial: t } ;

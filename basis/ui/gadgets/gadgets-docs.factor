@@ -136,6 +136,18 @@ HELP: add-gadget
 { $notes "Adding a gadget to a parent may result in " { $link graft* } " being called on the children, if the parent is visible on the screen." }
 { $side-effects "parent" } ;
 
+HELP: add-gadget-at
+{ $values { "parent" gadget } { "child" gadget } { "index" "a non-negative integer" } }
+{ $description "Adds a child gadget to a parent as in " { $link add-gadget } " at the specified index in its parent's display list." }
+{ $notes "Adding a gadget to a parent may result in " { $link graft* } " being called on the children, if the parent is visible on the screen." }
+{ $side-effects "parent" } ;
+
+HELP: add-gadget*
+{ $values { "parent" gadget } { "child" gadget } { "info" "extra info used to determine layout" } }
+{ $description "Adds a child gadget to a parent as in " { $link add-gadget } " along with advice on how to lay out the child.  Given info varies for different layouts.  See " { $link "ui-layout-protocol" } }
+{ $notes "Adding a gadget to a parent may result in " { $link graft* } " being called on the children, if the parent is visible on the screen." }
+{ $side-effects "parent" } ;
+
 HELP: add-gadgets
 { $values { "parent" gadget } { "children" "a sequence of gadgets" } }
 { $description "Adds a sequence of gadgets to a parent. The parent will be relayout." }
@@ -181,10 +193,47 @@ HELP: set-control-value
 { $values { "value" object } { "control" gadget } }
 { $description "Sets the value of the control's model." } ;
 
+HELP: output-model
+{ $values { "gadget" gadget } { "model" model } }
+{ $description "Gives the model used by the control for output." } ;
+
+HELP: remove-info
+{ $values { "gadget" gadget } { "parent" gadget } }
+{ $description "Remove layout information concerning the gadget." } ;
+
+HELP: clear-info
+{ $values { "parent" gadget } }
+{ $description "Remove all layout information kept by the parent." } ;
+
+HELP: (layout-info)
+{ $values { "gadget" gadget } { "parent" gadget } { "info" "layout info used by parent" } }
+{ $description "Return the layout information associated with the gadget.  Used only for making " { $link "ui-layout-protocol" } " methods. " } ;
+
+HELP: layout-info
+{ $values { "gadget" gadget } { "info" "layout info used by parent" } }
+{ $description "Return the layout information associated with the gadget." } ;
+
+HELP: add-info
+{ $values { "info" "layout info used by parent" } { "parent" gadget } }
+{ $description "Gives the model used by the control for output." } ;
+
+HELP: add-info-at
+{ $values { "info" "layout info used by parent" } { "parent" gadget } { "index" "a non-negative integer" } }
+{ $description "Gives the model used by the control for output." } ;
+
 ARTICLE: "ui-control-impl" "Implementing controls"
 "A " { $emphasis "control" } " is a gadget which is linked to an underlying " { $link model } " by having its " { $snippet "model" } " slot set to a " { $link model } " instance."
 $nl
 "Some utility words useful in control implementations:"
 { $subsection control-value }
 { $subsection set-control-value }
+{ $subsection output-model }
 { $see-also "models" } ;
+
+ARTICLE: "ui-layout-protocol" "Layout Protocol"
+"To uniformly add and remove gadgets from layouts, there are a number of generic words all layout gadgets should impliment:"
+{ $subsection remove-info }
+{ $subsection clear-info }
+{ $subsection add-info }
+{ $subsection (layout-info) }
+{ $subsection add-info-at } ;
