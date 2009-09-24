@@ -1,4 +1,4 @@
-USING: help.markup help.syntax ;
+USING: help.markup help.syntax models ;
 IN: models.filter
 HELP: filter-model
 { $values { "model" model } { "quot" "quotation with stack effect ( a b -- c )" } { "filter-model" filter-model } }

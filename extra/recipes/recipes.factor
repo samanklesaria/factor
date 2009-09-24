@@ -47,7 +47,7 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
     "all" <model-button> T{ recipe } >>value ALL ->
     <model-field*> SEARCH ->% 1
         [ [ f ] [ "%" dup surround <pattern> ] if-empty T{ recipe } swap >>title ] fmap
-    3array merge T{ recipe } >>value position [ top-recipes ] 2fmap ;
+    T{ recipe } <model> 4array merge position [ top-recipes ] 2fmap ;
 
 : votes ( -- model ) TOOLBAR
     IMG-MODEL-BUTTON: love [ 1 + ] >>value ->
@@ -55,7 +55,7 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
 
 : viewed ( submissions -- tuple-model )
     [let | ok [ "ok" <model-border-button> BUTTON -> dup SWITCH , ] |
-        dup [ got-tuples [ swap suffix ] fold* ok t >>value updates ] with-self
+        dup [ ok updates got-tuples [ suffix ] fold-switch ] with-self
         <quot-renderer> [ [ title>> ] [ genre>> ] bi 2array ] >>quot
             { "Title" "Genre" } >>column-titles <model-table>
             [ <scroller> RECIPES ,% 1 ] [ actions>> dup SWITCH , ] bi
@@ -78,3 +78,4 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
 UI-ENTER: recipe-browser ;
 
 ! cycles should auto-skip placeholders
+! the suffixes should be cleared on update
