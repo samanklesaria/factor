@@ -78,4 +78,3 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
 UI-ENTER: recipe-browser ;
 
 ! cycles should auto-skip placeholders
-! the suffixes should be cleared on update
