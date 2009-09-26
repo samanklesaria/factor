@@ -76,5 +76,3 @@ STORED-TUPLE: recipe { title { VARCHAR 100 } } { votes INTEGER } { txt TEXT } { 
     ] with-interface "recipes" open-window ;
 
 UI-ENTER: recipe-browser ;
-
-! cycles should auto-skip placeholders

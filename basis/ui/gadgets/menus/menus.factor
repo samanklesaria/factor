@@ -32,7 +32,7 @@ M: separator-pen draw-interior
     [ [ >integer ] map ] bi@ gl-line ;
 
 : <menu-items> ( items -- gadget )
-    [ <filled-pile> ] dip add-gadgets
+    [ <filled-pile> ] dip add-raw-gadgets
     panel-background-color <solid> >>interior ;
 
 PRIVATE>

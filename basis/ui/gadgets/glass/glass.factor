@@ -17,7 +17,7 @@ TUPLE: glass < gadget visible-rect owner ;
 : <glass> ( owner child visible-rect -- glass )
     glass new
         swap >>visible-rect
-        swap add-gadget
+        swap add-raw-gadget
         swap >>owner ;
     
 : visible-rect ( glass -- rect )
@@ -34,7 +34,7 @@ M: glass layout*
 M: glass ungraft* gadget-child hide-glass-hook ;
 
 : add-glass ( glass world -- )
-    [ swap add-gadget drop ] [ [ ?push ] change-layers drop ] 2bi ;
+    [ swap add-raw-gadget drop ] [ [ ?push ] change-layers drop ] 2bi ;
 
 PRIVATE>
 

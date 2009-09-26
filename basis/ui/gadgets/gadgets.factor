@@ -3,7 +3,7 @@
 USING: accessors arrays hashtables kernel math namespaces
 make sequences quotations math.vectors combinators sorting
 binary-search vectors dlists deques models threads
-concurrency.flags math.order math.rectangles fry locals ;
+concurrency.flags math.order math.rectangles fry locals inspector ;
 IN: ui.gadgets
 
 ! Values for orientation slot
@@ -385,16 +385,6 @@ M: gadget add-info-at 3drop ;
 
 <PRIVATE
 
-:: (with-layout) ( parent child info quot -- parent )
-    info child parent
-    [ >>parent drop ]
-    [ quot call( info child parent -- ) ]
-    [ graft-state>> second [ graft ] [ drop ] if ] 2tri
-    parent ;
-
-: with-layout ( parent child info quot -- parent )
-    not-in-layout (with-layout) dup relayout ;
-
 : (clear-gadget) ( gadget -- )
     dup [ (unparent) ] each-child
     f >>focus f >>children drop ;
@@ -406,20 +396,51 @@ PRIVATE>
     not-in-layout
     [ (clear-gadget) ] [ relayout ] bi ;
 
+<PRIVATE
+
+: with-layout ( quot -- parent )
+    not-in-layout call dup relayout ; inline
+
+: with-unparent ( child parent quot -- ) -rot
+    {
+        [ drop unparent ]
+        [ >>parent drop ]
+        [ rot call ]
+        [ graft-state>> second [ graft ] [ drop ] if ]
+    } 2cleave ; inline
+
+: ((add-gadget)) ( child parent info -- ) over
+    [ [ [ ?push ] change-children drop ] with-unparent ] 2dip add-info ;
+
+: (add-gadget) ( child parent -- ) default ((add-gadget)) ;
+
+: (add-raw-gadget) ( child parent -- )
+   [ [ ?push ] change-children drop ] with-unparent ;
+
+PRIVATE>
+
+: add-gadget ( parent child -- parent )
+    [ over (add-gadget) ] with-layout ;
+
 : add-gadget* ( parent child info -- parent )
-    [ [ ?push ] change-children add-info ] with-layout ;
+    [ [ over ] dip ((add-gadget)) ] with-layout ;
 
-: add-gadget ( parent child -- parent ) default add-gadget* ;
+: add-gadgets ( parent children -- parent )
+    [ [ over (add-gadget) ] each ] with-layout ;
 
-: add-gadgets ( parent children -- parent ) [ add-gadget ] each ;
+: add-raw-gadget ( parent children -- parent )
+    [ over (add-raw-gadget) ] with-layout ;
 
-: add-gadget-at* ( parent child index info -- parent ) swap
-    [| info child parent index |
-        child index parent [ insert-nth ] change-children
-        info swap index add-info-at
-    ] curry with-layout ;
+: add-raw-gadgets ( parent children -- parent )
+    [ [ over (add-raw-gadget) ] each ] with-layout ;
 
-: add-gadget-at ( parent child index -- parent ) f add-gadget-at* ;
+:: add-gadget-at* ( parent child index info -- parent )
+    [ child parent
+        [ [ index swap insert-nth ] change-children
+        info swap index add-info-at parent ] with-unparent
+    ] with-layout ;
+
+: add-gadget-at ( parent child index -- parent ) default add-gadget-at* ;
 
 USING: vocabs vocabs.loader ;
 
