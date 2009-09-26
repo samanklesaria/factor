@@ -60,9 +60,13 @@ PRIVATE>
 M: track (layout-info)
     [ children>> index ] [ sizes>> ] bi nth ;
 
-M: track add-info over default = [ [ drop f ] dip ] when sizes>> push ;
+: check-default ( info gadget -- info' gadget )
+    over default = [ [ drop f ] dip ] when ;
 
-M: track add-info-at swap [ insert-nth ] change-sizes drop ;
+M: track add-info check-default sizes>> push ;
+
+M: track add-info-at [ check-default ] dip
+    swap [ insert-nth ] change-sizes drop ;
 
 M: track remove-info
     [ [ children>> index ] keep sizes>> delete-nth ] [ call-next-method ] 2bi ;
