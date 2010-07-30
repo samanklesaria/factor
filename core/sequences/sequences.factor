@@ -977,3 +977,18 @@ PRIVATE>
             [ array-flip ] [ generic-flip ] if
         ] [ generic-flip ] if
     ] unless ;
+
+: reduce1 ( seq quot -- result ) [ unclip-slice ] dip reduce ; inline
+
+<PRIVATE
+
+: reverse-each-int ( n quot: ( i -- ) -- )
+    over 0 < [ 2drop ] [ [ call ] 2keep [ 1 - ] dip reverse-each-int ] if ; inline recursive
+
+PRIVATE>
+
+: reduce-r ( seq identity quot: ( prev elt -- next ) -- result )
+    swapd (each) [ 1 - ] dip reverse-each-int ; inline
+
+: combos ( seq1 seq2 -- result )
+    swap [ [ [ 2array ] curry ] dip swap map ] curry map concat ;
