@@ -2,7 +2,13 @@
 
 <t:chloe xmlns:t="http://factorcode.org/chloe/1.0">
 
-	<t:title>Recent Posts</t:title>
+	<t:title>
+		<t:label t:name="title" />
+	</t:title>
+	
+	<t:atom t:href="$blogs/posts.atom" t:query="author">
+		<t:label t:name="title" />
+	</t:atom>
 
 	<t:bind-each t:name="posts">
 
@@ -18,7 +24,7 @@
 
 		<div class="posting-footer">
 			Post by
-			<t:a t:href="$blogs/by" t:rest="author">
+			<t:a t:href="$blogs/index" t:query="author">
 				<t:label t:name="author" />
 			</t:a>
 			on
@@ -31,5 +37,12 @@
 		</div>
 
 	</t:bind-each>
+	
+	<div class="navbar">
 
+		<t:bind-each t:name="months">
+			<t:a t:href="$blogs/index/" t:query="month,author"> <t:label t:name="title"/> Month</t:a>
+		</t:bind-each>
+	</div>
+	
 </t:chloe>

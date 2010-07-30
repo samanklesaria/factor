@@ -5,7 +5,7 @@
 	<t:title>Edit: <t:label t:name="title" /></t:title>
 
 	<div class="post-form">
-		<t:form t:action="$blogs/edit-post" t:for="id">
+		<t:form t:action="$blogs/edit-post" t:rest="id">
 
 			<p>Title: <t:field t:name="title" t:size="60" /></p>
 			<p><t:textarea t:name="content" t:rows="30" t:cols="80" /></p>
@@ -15,7 +15,7 @@
 
 	<div class="posting-footer">
 		Post by
-		<t:a t:href="$blogs/by" t:rest="author">
+		<t:a t:href="$blogs/index" t:query="author">
 			<t:label t:name="author" />
 		</t:a>
 		on

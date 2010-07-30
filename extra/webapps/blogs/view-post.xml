@@ -18,7 +18,7 @@
 
 	<div class="posting-footer">
 		Post by
-		<t:a t:href="$blogs/" t:rest="author">
+		<t:a t:href="$blogs/index" t:query="author">
 			<t:label t:name="author" />
 		</t:a>
 		on
