@@ -125,7 +125,9 @@ PRIVATE>
         redos>> delete-all
     ] if ;
 
-:: set-doc-range ( string from to document -- )
+GENERIC: set-doc-range ( string from to document -- )
+
+M:: document set-doc-range ( string from to document -- )
     from to = string empty? and [
         string string-lines :> new-lines
         new-lines from text+loc :> new-to

@@ -26,9 +26,9 @@ IN: ui.gadgets.scrollers.tests
 ] unit-test
 
 "v" get [
-    [ { 10 20 } ] [ "v" get model>> range-value ] unit-test
+    [ V{ 10 20 } ] [ "v" get model>> range-value ] unit-test
 
-    [ { 10 20 } ] [ "g" get loc>> vneg ] unit-test
+    [ V{ 10 20 } ] [ "g" get loc>> vneg ] unit-test
 ] with-grafted-gadget
 
 [ ] [
@@ -47,17 +47,17 @@ IN: ui.gadgets.scrollers.tests
 
     [ ] [ { 0 0 } "s" get set-scroll-position ] unit-test
 
-    [ { 0 0 } ] [ "s" get model>> range-min-value ] unit-test
+    [ V{ 0 0 } ] [ "s" get model>> range-min-value ] unit-test
 
-    [ { 100 100 } ] [ "s" get model>> range-max-value ] unit-test
+    [ V{ 100 100 } ] [ "s" get model>> range-max-value ] unit-test
 
-    [ ] [ { 10 20 } "s" get set-scroll-position ] unit-test
+    [ ] [ V{ 10 20 } "s" get set-scroll-position ] unit-test
 
-    [ { 10 20 } ] [ "s" get model>> range-value ] unit-test
+    [ V{ 10 20 } ] [ "s" get model>> range-value ] unit-test
 
-    [ { 10 20 } ] [ "s" get viewport>> model>> range-value ] unit-test
+    [ V{ 10 20 } ] [ "s" get viewport>> model>> range-value ] unit-test
 
-    [ { 10 20 } ] [ "g" get loc>> vneg ] unit-test
+    [ V{ 10 20 } ] [ "g" get loc>> vneg ] unit-test
 ] with-grafted-gadget
 
 <gadget> { 600 400 } >>dim "g1" set
@@ -75,7 +75,7 @@ dup layout
         "g2" get scroll>gadget
         "s" get layout
         "s" get scroll-position
-    ] map [ { 0 0 } = ] all?
+    ] map [ V{ 0 0 } = ] all?
 ] unit-test
 
 [ ] [ "Hi" <label> dup "l" set <scroller> "s" set ] unit-test
@@ -102,5 +102,5 @@ dup layout
     swap dup quot>> call
     dup layout
     model>> dependencies>> [ range-max value>> ] map
-    { 0 0 } =
+    V{ 0 0 } =
 ] unit-test

@@ -254,3 +254,5 @@ PRIVATE>
 
 : add-toolbar ( track -- track )
     dup <toolbar> { 3 3 } <border> align-left f track-add ;
+
+: button-text ( button -- string ) children>> first text>> ;

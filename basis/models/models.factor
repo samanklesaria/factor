@@ -118,3 +118,15 @@ GENERIC: set-range-max-value ( value model -- )
 : pop-model ( model -- value )
     [ pop ] change-model* ;
 
+: add-dependency* ( model dependency -- )
+    [ swap add-dependency ] 2keep
+    over ref>> 0 = [ 2drop ]
+    [ [ add-connection ] [ drop update-model ] 2bi ] if ;
+
+: clear-model ( model -- )
+    [ dup dependencies>> [ remove-connection ] with each ]
+    [ dependencies>> delete-all ] bi ;
+
+: model-delete ( model parent -- )
+    [ remove-dependency ]
+    [ swap remove-connection ] 2bi ;

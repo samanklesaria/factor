@@ -128,6 +128,12 @@ M: scroller model-changed
     t >>root?
     <scroller-model> >>model
     swap >>column-header ; inline
+PRIVATE>
+
+GENERIC# (build-children) 2 ( gadget range orientation -- gadget slider )
+M: scroller (build-children) <slider> ;
+
+<PRIVATE
 
 : build-children ( gadget scroller -- scroller )
     dup model>> dependencies>>
@@ -137,13 +143,15 @@ M: scroller model-changed
 
 PRIVATE>
 
-: <scroller> ( gadget -- scroller )
-    dup viewport-column-header
-    dup [ 2 3 ] [ 2 2 ] if scroller new-frame
+: new-scroller ( gadget class -- scroller )
+    [ dup viewport-column-header
+    dup [ 2 3 ] [ 2 2 ] if ] dip new-frame
         init-scroller
         build-children
         dup column-header>>
         [ build-header-scroller ] [ build-scroller ] if ;
+
+: <scroller> ( gadget -- scroller ) scroller new-scroller ;
 
 : scroll>rect ( rect gadget -- )
     dup find-scroller* dup [

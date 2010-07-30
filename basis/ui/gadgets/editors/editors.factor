@@ -616,10 +616,10 @@ TUPLE: field < border editor min-cols max-cols ;
 
 PRIVATE>
 
-: new-field ( class -- gadget )
-    [ <editor> ] dip new-border
+: new-field ( class editor-class -- gadget )
+    new-editor swap new-border
         dup gadget-child >>editor
-        field-theme ; inline
+        field-theme { 1 0 } >>align ; inline
 
 ! For line-gadget-width
 M: field font>> editor>> font>> ;
@@ -630,28 +630,35 @@ M: field pref-dim*
     [ [ line-gadget-width ] [ drop second ] 2bi 2array ]
     tri border-pref-dim ;
 
-TUPLE: model-field < field field-model ;
+: init-model ( object -- object ) [ [ ] [ "" ] if* ] change-value ;
+
+TUPLE: model-field < field ;
 
 : <model-field> ( model -- gadget )
-    model-field new-field
-        swap >>field-model ;
+    model-field editor new-field swap
+    init-model >>model ;
+ 
+: <model-field*> ( -- gadget ) "" <model> <model-field> ;
 
 M: model-field graft*
-    [ [ field-model>> value>> ] [ editor>> ] bi set-editor-string ]
+    [ [ model>> value>> ] [ editor>> ] bi set-editor-string ]
     [ dup editor>> model>> add-connection ]
-    bi ;
+    [ dup model>> add-connection ] tri ;
 
 M: model-field ungraft*
-    dup editor>> model>> remove-connection ;
-
-M: model-field model-changed
-    nip [ editor>> editor-string ] [ field-model>> ] bi set-model ;
+    [ dup editor>> model>> remove-connection ]
+    [ dup model>> remove-connection ] bi ;
+ 
+M: model-field model-changed 2dup model>> = [
+        [ value>> ] [ editor>> ] bi* set-editor-string
+    ] [ nip
+        [ editor>> editor-string ] [ model>> ] bi set-model
+    ] if ;
 
 TUPLE: action-field < field quot ;
 
 : <action-field> ( quot -- gadget )
-    action-field new-field
-        swap >>quot ;
+    action-field editor new-field swap >>quot ;
 
 : invoke-action-field ( field -- )
     [ editor>> editor-string ]
@@ -662,3 +669,8 @@ TUPLE: action-field < field quot ;
 action-field H{
     { T{ key-down f f "RET" } [ invoke-action-field ] }
 } set-gestures
+
+: <multiline-field> ( model -- gadget ) model-field multiline-editor
+    new-field swap init-model >>model ;
+
+: <multiline-field*> ( -- editor ) "" <model> <multiline-field> ;

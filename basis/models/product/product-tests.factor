@@ -10,15 +10,15 @@ IN: models.product.tests
 
 [ ] [ "c" get activate-model ] unit-test
 
-[ { 1 2 } ] [ "c" get value>> ] unit-test
+[ V{ 1 2 } ] [ "c" get value>> ] unit-test
 
 [ ] [ 3 "b" get set-model ] unit-test
 
-[ { 1 3 } ] [ "c" get value>> ] unit-test
+[ V{ 1 3 } ] [ "c" get value>> ] unit-test
 
 [ ] [ { 4 5 } "c" get set-model ] unit-test
 
-[ { 4 5 } ] [ "c" get value>> ] unit-test
+[ V{ 4 5 } ] [ "c" get value>> ] unit-test
 
 [ ] [ "c" get deactivate-model ] unit-test
 

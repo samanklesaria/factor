@@ -5,11 +5,13 @@ IN: models.arrow
 
 TUPLE: arrow < model model quot ;
 
-: <arrow> ( model quot -- arrow )
-    f arrow new-model
-        swap >>quot
-        over >>model
-        [ add-dependency ] keep ;
+: new-arrow ( model quot class -- arrow )
+    f swap new-model
+    swap >>quot
+    over >>model
+    [ add-dependency ] keep ;
+
+: <arrow> ( model quot -- arrow ) arrow new-arrow ;
 
 M: arrow model-changed
     [ [ value>> ] [ quot>> ] bi* call( old -- new ) ] [ nip ] 2bi

@@ -19,17 +19,23 @@ M: model-tester model-changed nip t >>hit? drop ;
 "model-a" get "model-b" get 2array <product> "model-c" set
 
 "model-c" get activate-model
-[ { 3 4 } ] [ "model-c" get value>>  ] unit-test
+[ V{ 3 4 } ] [ "model-c" get value>>  ] unit-test
 "model-c" get deactivate-model
 
 T{ model-tester f f } "tester" set
 
-[ T{ model-tester f t } { 6 4 } ]
+[ T{ model-tester f t } V{ 6 4 } ]
 [
     "tester" get "model-c" get add-connection
     6 "model-a" get set-model
     "tester" get
     "model-c" get value>>
+] unit-test
+
+[ V{ } ] [
+    "ha" <model> dup 1array <product>
+    [ activate-model ] [ model-delete ]
+    [ dependencies>> ] tri
 ] unit-test
 
 [ T{ model-tester f t } V{ 5 } ]

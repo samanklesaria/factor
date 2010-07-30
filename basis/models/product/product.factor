@@ -7,7 +7,7 @@ TUPLE: product < model ;
 
 : new-product ( models class -- product )
     f swap new-model
-        swap clone >>dependencies ; inline
+        swap V{ } clone-like >>dependencies ; inline
 
 : <product> ( models -- product )
     product new-product ;
