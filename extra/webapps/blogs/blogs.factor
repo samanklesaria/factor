@@ -214,7 +214,7 @@ TUPLE: nav month title ; C: <nav> nav
 
 : <blogs> ( -- dispatcher )
     blogs new-dispatcher
-        URL" /index" <redirect-responder> "" add-responder
+        URL" $blogs/index" <redirect-responder> "" add-responder
         <list-posts-action> "index" add-responder
         <list-posts-feed-action> "posts.atom" add-responder
         <my-posts-action> "mine" add-responder
