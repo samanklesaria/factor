@@ -1,0 +1,1 @@
+Proxy models distribute a root model's updates
