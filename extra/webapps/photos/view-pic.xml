@@ -1,0 +1,50 @@
+<?xml version='1.0' ?>
+
+<t:chloe xmlns:t="http://factorcode.org/chloe/1.0">
+
+	<t:title> <t:label t:name="author" />: <t:label t:name="title" /> </t:title>
+
+	<p class="posting-body">
+		<img src="@img"/>
+	</p>
+
+	<div class="posting-footer">
+		Picture by
+		<t:a t:href="$photos/index" t:query="author">
+			<t:label t:name="author" />
+		</t:a>
+		on
+		<t:label t:name="date" />
+		|
+		<t:button t:action="$photos/delete-pic" t:for="id,author" class="link-button link">Delete Picture</t:button>
+	</div>
+
+	<t:bind-each t:name="comments">
+		<hr/>
+
+		<p class="comment-header">
+			<a name="@id">Comment by <t:label t:name="author" /> on <t:label t:name="date" />:</a>
+		</p>
+
+		<p class="posting-body">
+			<t:farkup t:name="content" t:no-follow="true" t:disable-images="true" />
+		</p>
+		
+		<t:button t:action="$photos/delete-comment" t:for="id,parent" class="link-button link">Delete Comment</t:button>
+
+	</t:bind-each>
+
+	<t:bind t:name="new-comment">
+
+		<h2>New Comment</h2>
+
+		<div class="post-form">
+			<t:form t:action="$photos/new-comment" t:for="parent">
+				<p><t:textarea t:name="content" t:rows="20" t:cols="60" /></p>
+				<p><input type="SUBMIT" value="Done" /></p>
+			</t:form>
+		</div>
+
+	</t:bind>
+
+</t:chloe>

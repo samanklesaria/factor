@@ -1,0 +1,24 @@
+<?xml version='1.0' ?>
+<!--
+	Main Browser
+	Copyright (c) 2010 Sam Anklesaria
+	See http://factorcode.org/license.txt for BSD license.
+
+-->
+<t:chloe xmlns:t="http://factorcode.org/chloe/1.0">
+
+	<t:title>Photography</t:title>
+	
+	<table cellpadding="5" bgcolor="#999">
+		<t:each t:name="rows">
+			<tr>
+				<t:bind-each t:name="value">
+					<td><t:a t:href="$photos/pic" t:rest="id">
+						<img src="@thumbnail"/>
+					</t:a></td>
+				</t:bind-each>
+			</tr>
+		</t:each>
+	</table>
+	
+</t:chloe>

@@ -1,0 +1,16 @@
+<?xml version='1.0' ?>
+
+<t:chloe xmlns:t="http://factorcode.org/chloe/1.0">
+
+	<t:title>Upload Picture</t:title>
+
+	<div class="post-form">
+		<t:form t:action="$photos/upload" enctype="multipart/form-data">
+			<p>Title: <t:field t:name="title" t:size="60" /></p>
+			<p><input type="file" name="localimg" t:size="0" /></p>
+			<input type="SUBMIT" value="Done" />
+		</t:form>
+	</div>
+
+	<t:validation-errors />
+</t:chloe>
