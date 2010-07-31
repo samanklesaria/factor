@@ -2,7 +2,7 @@
 ! See http://factorcode.org/license.txt for BSD license.
 USING: accessors combinators kernel locals sequences ui.gadgets
 ui.gadgets.private vectors ui.gadgets.tracks ui.gadgets.grids
-ui.gadgets.grids.private ui.gadgets.tables ui.gadgets.sliders
+ui.gadgets.grids.private ui.gadgets.tables.multi ui.gadgets.sliders
 ui.gadgets.scrollers models models.range arrays ui.gadgets.packs
 ui.gadgets.books ui.gadgets.frames ;
 IN: ui.gadgets.layout-protocol

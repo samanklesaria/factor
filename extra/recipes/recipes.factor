@@ -3,7 +3,7 @@ db.tuples db.types io.files.temp kernel math models
 models.combinators models.fold models.merge monads persistency
 sequences ui ui.gadgets.buttons ui.gadgets.editors
 ui.gadgets.labels ui.gadgets.layout ui.gadgets.model-buttons
-ui.gadgets.model-tables ui.gadgets.scrollers ui.gadgets.tables
+ui.gadgets.model-tables ui.gadgets.scrollers ui.gadgets.tables.multi
 ui.pens.solid math.order locals models.product.discrete
 ui.gadgets.tables.renderers ;
 FROM: sets => members ;

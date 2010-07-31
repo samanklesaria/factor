@@ -1,6 +1,6 @@
 ! Copyright (C) 2010 Sam Anklesaria.
 ! See http://factorcode.org/license.txt for BSD license.
-USING: accessors arrays kernel ui.gadgets.tables ;
+USING: accessors arrays kernel ui.gadgets.tables.multi ;
 IN: ui.gadgets.tables.renderers
 
 ! Rendering with quots
