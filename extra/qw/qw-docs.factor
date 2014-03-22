@@ -7,8 +7,8 @@ HELP: qw{
 { $description "Marks the beginning of a literal array of strings. Component strings are delimited by whitespace." }
 { $examples
 { $unchecked-example """USING: prettyprint qw ;
-qw{ pop quiz my hive of big wild ex tranny jocks } ."""
-"""{ "pop" "quiz" "my" "hive" "of" "big" "wild" "ex" "tranny" "jocks" }""" }
+qw{ pop quiz my hive of big wild jocks } ."""
+"""{ "pop" "quiz" "my" "hive" "of" "big" "wild" "jocks" }""" }
 } ;
 
 ARTICLE: "qw" "Quoted words"
